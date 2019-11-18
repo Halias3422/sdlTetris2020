@@ -4,7 +4,7 @@ SRC_PATH = ./src/
 OBJ_PATH = ./obj/
 INC_PATH = ./includes/
 
-SOURCES= main.c
+SOURCES= main.c load_tetros.c sdl_functions.c
 INCLUDES= tetris.h
 OBJ_NAME = $(SOURCES:.c=.o)
 
