@@ -12,7 +12,7 @@
 
 typedef struct			s_tetris
 {
-	int					**board;
+	char				**board;
 	int					score;
 	int					lost;
 	int					tetro_type;
@@ -51,6 +51,16 @@ typedef struct			s_tetros
 	SDL_Texture			*Z2;
 }						t_tetros;
 
+typedef struct			s_tiles
+{
+	SDL_Texture			*blue;
+	SDL_Texture			*dark_blue;
+	SDL_Texture			*green;
+	SDL_Texture			*orange;
+	SDL_Texture			*purple;
+	SDL_Texture			*red;
+	SDL_Texture			*yellow;
+}						t_tiles;
 
 typedef struct			s_sdl
 {
@@ -60,7 +70,7 @@ typedef struct			s_sdl
 	SDL_Surface			*img_load;
 	SDL_Texture			*playground;
 	struct s_tetros		*tetros;
-
+	struct s_tiles		*tiles;
 }						t_sdl;
 
 //	MAIN_C
@@ -90,6 +100,17 @@ void			load_I_tetros(t_sdl *sdl);
 void			load_J_tetros(t_sdl *sdl);
 void			load_L_tetros(t_sdl *sdl);
 void			load_O_tetros(t_sdl *sdl);
+
+//	LOAD_TILES_C
+
+void			load_tiles_img(t_sdl *sdl);
+void			load_blue_tile(t_sdl *sdl);
+void			load_dark_blue_tile(t_sdl *sdl);
+void			load_green_tile(t_sdl *sdl);
+void			load_orange_tile(t_sdl *sdl);
+void			load_purple_tile(t_sdl *sdl);
+void			load_red_tile(t_sdl *sdl);
+void			load_yellow_tile(t_sdl *sdl);
 
 //	SPAWN_TETROS_C
 

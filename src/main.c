@@ -7,6 +7,7 @@ void			init_sdl_struct(t_sdl *sdl)
 	sdl->img_load = NULL;
 	sdl->playground = NULL;
 	sdl->tetros = NULL;
+	sdl->tiles = NULL;
 }
 
 void			clean_sdl_struct(t_sdl *sdl)
@@ -33,8 +34,17 @@ void			clean_sdl_struct(t_sdl *sdl)
 	SDL_DestroyTexture(sdl->tetros->T4);
 	SDL_DestroyTexture(sdl->tetros->Z1);
 	SDL_DestroyTexture(sdl->tetros->Z2);
+	SDL_DestroyTexture(sdl->tiles->blue);
+	SDL_DestroyTexture(sdl->tiles->dark_blue);
+	SDL_DestroyTexture(sdl->tiles->green);
+	SDL_DestroyTexture(sdl->tiles->orange);
+	SDL_DestroyTexture(sdl->tiles->purple);
+	SDL_DestroyTexture(sdl->tiles->yellow);
+	SDL_DestroyTexture(sdl->tiles->blue);
 	if (sdl->tetros)
 		free(sdl->tetros);
+	if (sdl->tiles)
+		free(sdl->tiles);
 	IMG_Quit();
 	SDL_Quit();
 }
@@ -85,13 +95,15 @@ void			clean_tetris_struct(t_tetris *tetris)
 
 void			init_tetris_struct(t_tetris *tetris)
 {
-	tetris->board = (int**)malloc(sizeof(int*) * 20);
+	tetris->board = (char**)malloc(sizeof(char*) * (20 + 1));
 	for (int i = 0; i < 20; i++)
 	{
-		tetris->board[i] = (int*)malloc(sizeof(int) * 10);
+		tetris->board[i] = (char*)malloc(sizeof(char) * (10 + 1));
 		for (int j = 0; j < 10; j++)
-			tetris->board[i][j] = 0;
+			tetris->board[i][j] = '0';
+		tetris->board[i][10] = '\0';
 	}
+	tetris->board[20] = NULL;
 	tetris->score = 0;
 	tetris->lost = 0;
 	tetris->curr_tetro = NULL;
@@ -110,6 +122,7 @@ int				main(void)
 	setup_window_background(&sdl);
 	load_and_render_playground(&sdl);
 	load_tetros_img(&sdl);
+	load_tiles_img(&sdl);
 	init_tetris_struct(&tetris);
 
 	game_loop(&sdl, &tetris);
