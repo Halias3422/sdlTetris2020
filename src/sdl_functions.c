@@ -13,7 +13,7 @@ void			SDL_init_window(t_sdl *sdl)
 void			SDL_init_renderer(t_sdl *sdl)
 {
 	if ((sdl->renderer = SDL_CreateRenderer(sdl->window, -1,
-					SDL_RENDERER_ACCELERATED)) == NULL)
+					SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE)) == NULL)
 		failure_exit_program("Creating Window Renderer", sdl);
 }
 
@@ -30,8 +30,22 @@ void			SDL_init_img(t_sdl *sdl)
 		failure_exit_program("Initializing IMAGES", sdl);
 }
 
-void			SDL_render_clear(t_sdl *sdl)
+void			SDL_render_clear(t_sdl *sdl, SDL_Renderer *renderer)
 {
-	if ((SDL_RenderClear(sdl->renderer)) != 0)
+	if ((SDL_RenderClear(renderer)) != 0)
 		failure_exit_program("Clearing Render With Color", sdl);
+}
+
+void			SDL_render_copy(t_sdl *sdl, SDL_Renderer *renderer,
+				SDL_Texture *texture, SDL_Rect *src, SDL_Rect *dest)
+{
+	if (SDL_RenderCopy(renderer, texture, src, dest) != 0)
+		failure_exit_program("Rendering Copy Of Texture", sdl);
+}
+
+void			SDL_render_target(t_sdl *sdl, SDL_Renderer *renderer,
+				SDL_Texture *texture)
+{
+	if (SDL_SetRenderTarget(renderer, texture) != 0)
+		failure_exit_program("Setting Texture as Render Target", sdl);
 }

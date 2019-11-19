@@ -46,6 +46,7 @@ void			load_L_tetros(t_sdl *sdl)
 
 void			load_O_tetros(t_sdl *sdl)
 {
+	SDL_render_target(sdl, sdl->renderer, sdl->tetros->O);
 	sdl->tetros->O = tetro_convert_surface_to_texture(sdl, sdl->tetros->O,
 			"img/O_tetro/O1_yellow_tetro.png");
 }

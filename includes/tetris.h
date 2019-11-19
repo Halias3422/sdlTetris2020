@@ -4,10 +4,27 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 # define DARK_BLUE {0, 25, 51, 255}
+
+typedef struct			s_tetris
+{
+	int					**board;
+	int					score;
+	int					lost;
+	int					tetro_type;
+	int					**curr_tetro;
+	int					curr_len_x;
+	int					curr_len_y;
+	int					offset_left;
+	int					offset_right;
+	int					act_x;
+	int					act_y;
+	int					spawned;
+}						t_tetris;
 
 typedef struct			s_tetros
 {
@@ -32,6 +49,7 @@ typedef struct			s_tetros
 	SDL_Texture			*Z2;
 }						t_tetros;
 
+
 typedef struct			s_sdl
 {
 	SDL_Window			*window;
@@ -49,7 +67,11 @@ void			failure_exit_program(char *error, t_sdl *sdl);
 
 //	SDL_FUNCTIONS_C
 
-void			SDL_render_clear(t_sdl *sdl);
+void			SDL_render_target(t_sdl *sdl, SDL_Renderer *renderer,
+				SDL_Texture *texture);
+void			SDL_render_copy(t_sdl *sdl, SDL_Renderer *renderer,
+		SDL_Texture *texture, SDL_Rect *src, SDL_Rect *dest);
+void			SDL_render_clear(t_sdl *sdl, SDL_Renderer *renderer);
 void			SDL_apply_color_to_renderer(SDL_Color rgba, t_sdl *sdl);
 void			SDL_init_renderer(t_sdl *sdl);
 void			SDL_init_img(t_sdl *sdl);
@@ -67,6 +89,6 @@ void			load_J_tetros(t_sdl *sdl);
 void			load_L_tetros(t_sdl *sdl);
 void			load_O_tetros(t_sdl *sdl);
 SDL_Texture		*tetro_convert_surface_to_texture(t_sdl *sdl,
-				SDL_Texture *texture, char *img_path);
+		SDL_Texture *texture, char *img_path);
 
 #endif
