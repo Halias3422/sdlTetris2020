@@ -2,7 +2,7 @@
 
 void			SDL_init_window(t_sdl *sdl)
 {
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
 			failure_exit_program("Initialization SDL WINDOW", sdl);
 	if ((sdl->window = SDL_CreateWindow("SUCH AMAZING TETRIS, SUCH WOW",
 				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1920, 1080,

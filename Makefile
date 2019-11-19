@@ -4,7 +4,7 @@ SRC_PATH = ./src/
 OBJ_PATH = ./obj/
 INC_PATH = ./includes/
 
-SOURCES= main.c load_tetros.c sdl_functions.c
+SOURCES= main.c load_tetros.c spawn_tetros.c sdl_functions.c game_loop.c
 INCLUDES= tetris.h
 OBJ_NAME = $(SOURCES:.c=.o)
 
@@ -12,7 +12,7 @@ INC = $(addprefix $(INC_PATH), $(INCLUDES))
 SRC = $(addprefix $(SRC_PATH), $(SOURCES))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 
-FLAG += -Wall -Werror -Wextra #-fsanitize=address
+FLAG += -Wall -Wextra #-fsanitize=address
 
 all:
 	make $(NAME)

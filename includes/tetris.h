@@ -23,6 +23,8 @@ typedef struct			s_tetris
 	int					offset_right;
 	int					act_x;
 	int					act_y;
+	int					prev_x;
+	int					prev_y;
 	int					spawned;
 }						t_tetris;
 
@@ -70,7 +72,7 @@ void			failure_exit_program(char *error, t_sdl *sdl);
 void			SDL_render_target(t_sdl *sdl, SDL_Renderer *renderer,
 				SDL_Texture *texture);
 void			SDL_render_copy(t_sdl *sdl, SDL_Renderer *renderer,
-		SDL_Texture *texture, SDL_Rect *src, SDL_Rect *dest);
+				SDL_Texture *texture, SDL_Rect *src, SDL_Rect *dest);
 void			SDL_render_clear(t_sdl *sdl, SDL_Renderer *renderer);
 void			SDL_apply_color_to_renderer(SDL_Color rgba, t_sdl *sdl);
 void			SDL_init_renderer(t_sdl *sdl);
@@ -88,7 +90,26 @@ void			load_I_tetros(t_sdl *sdl);
 void			load_J_tetros(t_sdl *sdl);
 void			load_L_tetros(t_sdl *sdl);
 void			load_O_tetros(t_sdl *sdl);
-SDL_Texture		*tetro_convert_surface_to_texture(t_sdl *sdl,
-		SDL_Texture *texture, char *img_path);
+
+//	SPAWN_TETROS_C
+
+void			S_tetro_spawn(t_tetris *tetris);
+void			T_tetro_spawn(t_tetris *tetris);
+void			I_tetro_spawn(t_tetris *tetris);
+void			L_tetro_spawn(t_tetris *tetris);
+void			J_tetro_spawn(t_tetris *tetris);
+void			O_tetro_spawn(t_tetris *tetris);
+void			Z_tetro_spawn(t_tetris *tetris);
+void			get_current_tetro(t_tetris *tetris, int tetro);
+
+//	GAME_LOOP_C
+
+Uint32			move_tetro_left_right(t_tetris *tetris, Uint32 currently_pressed,
+		Uint32 last_pressed, int direction);
+Uint32			scan_exit_and_time(const Uint8 *state, Uint32 currently_pressed);
+int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris);
+void			spawn_new_tetro(t_sdl *sdl, t_tetris *tetris);
+void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris);
+void			game_loop(t_sdl *sdl, t_tetris *tetris);
 
 #endif
