@@ -1,61 +1,99 @@
 #include "../includes/tetris.h"
 
-void			print_tetris_board(t_tetris *tetris)
-{
-	int i = 0;
-
-	printf("\n");
-	while (tetris->board[i])
-	{
-		printf("%s\n", tetris->board[i]);
-		i++;
-	}
-}
-
-void			print_tetro_board(t_tetris *tetris, int len_x, int len_y)
-{
-	printf("\n");
-	for (int i = 0; i < len_y; i++)
-	{
-		for (int j = 0; j < len_x; j++)
-			printf("%d ", tetris->curr_tetro[i][j]);
-		printf("\n");
-	}
-
-}
 void			spawn_new_tetro(t_sdl *sdl, t_tetris *tetris)
 {
 
+	check_letters_on_board(tetris);
 	tetris->tetro_type = -1;
 	srand(time(NULL));
-	tetris->tetro_type = rand() % 7;
+//	tetris->tetro_type = rand() % 7;
+	tetris->tetro_type = 1;
 	get_current_tetro(tetris, tetris->tetro_type);
 	tetris->act_y = 0;
-	tetris->act_x = rand() % ((9 - tetris->offset_right) + 1 -
+	tetris->act_x =rand() % ((9 - tetris->offset_right) + 1 -
 			tetris->offset_left) + tetris->offset_left;
 	tetris->spawned = 1;
+	tetris->rotation = 1;
+	tetris->old_rotation = -1;
 	tetris->prev_x = tetris->act_x;
 	tetris->prev_y = tetris->act_y;
 }
 
 SDL_Texture		*get_current_tetro_texture(t_sdl *sdl, t_tetris *tetris)
 {
-	switch (tetris->tetro_type)
+	if (tetris->rotation == 1)
 	{
-		case 0:
-			return (sdl->tetros->S1);
-		case 1:
-			return (sdl->tetros->I1);
-		case 2:
-			return (sdl->tetros->J1);
-		case 3:
-			return (sdl->tetros->L1);
-		case 4:
-			return (sdl->tetros->O);
-		case 5:
-			return (sdl->tetros->T1);
-		case 6:
-			return (sdl->tetros->Z1);
+		switch (tetris->tetro_type)
+		{
+			case 0:
+				return (sdl->tetros->S1);
+			case 1:
+				return (sdl->tetros->I1);
+			case 2:
+				return (sdl->tetros->J1);
+			case 3:
+				return (sdl->tetros->L1);
+			case 4:
+				return (sdl->tetros->O);
+			case 5:
+				return (sdl->tetros->T1);
+			case 6:
+				return (sdl->tetros->Z1);
+		}
+	}
+	else if (tetris->rotation == 2)
+	{
+		switch (tetris->tetro_type)
+		{
+			case 0:
+				return (sdl->tetros->S2);
+			case 1:
+				return (sdl->tetros->I2);
+			case 2:
+				return (sdl->tetros->J2);
+			case 3:
+				return (sdl->tetros->L2);
+			case 5:
+				return (sdl->tetros->T2);
+			case 6:
+				return (sdl->tetros->Z2);
+		}
+	}
+	else if (tetris->rotation == 3)
+	{
+		switch (tetris->tetro_type)
+		{
+			case 0:
+				return (sdl->tetros->S1);
+			case 1:
+				return (sdl->tetros->I1);
+			case 2:
+				return (sdl->tetros->J3);
+			case 3:
+				return (sdl->tetros->L3);
+			case 5:
+				return (sdl->tetros->T3);
+			case 6:
+				return (sdl->tetros->Z1);
+		}
+	}
+	else if (tetris->rotation == 4)
+	{
+		switch (tetris->tetro_type)
+		{
+			case 0:
+				return (sdl->tetros->S2);
+			case 1:
+				return (sdl->tetros->I2);
+			case 2:
+				return (sdl->tetros->J4);
+			case 3:
+				return (sdl->tetros->L4);
+			case 5:
+				return (sdl->tetros->T4);
+			case 6:
+				return (sdl->tetros->Z2);
+		}
 	}
 	failure_exit_program("Could Not Retreive Current Tetro Texture", sdl);
 	return (NULL);
@@ -89,8 +127,8 @@ void			render_all_grounded_tetros(t_sdl *sdl, t_tetris *tetris)
 			dst.x += 48;
 			j++;
 		}
-	dst.y += 48;
-	i++;
+		dst.y += 48;
+		i++;
 	}
 }
 
@@ -110,56 +148,88 @@ void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 	SDL_RenderPresent(sdl->renderer);
 }
 
-int			check_if_tetro_can_move_left(t_tetris *tetris)
+void			abort_new_rotation(t_tetris *tetris, int **old_tetro,
+		int prev_rotation)
 {
-	if (tetris->act_x - tetris->offset_left - 1 < 0)
-		return (0);
-	for (int y = tetris->act_y; y < tetris->act_y + tetris->curr_len_y; y++)
-	{
-		for (int x = tetris->act_x; x < tetris->act_x + tetris->curr_len_x; x++)
-		{
-			if (tetris->board[y][x - 1] != '0' && tetris->board[y][x - 1] != '1')
-				return (0);
-		}
-	}
-	return (1);
+	free(tetris->curr_tetro);
+	tetris->curr_tetro = old_tetro;
+	tetris->rotation = prev_rotation;
+	tetris->act_x = tetris->prev_x;
+	tetris->act_y = tetris->prev_y;
 }
 
-int			check_if_tetro_can_move_right(t_tetris *tetris)
+int				check_if_rotation_is_doable(t_tetris *tetris)
 {
-	if (tetris->act_x + tetris->offset_right + 1 > 9)
-		return (0);
-	for (int y = tetris->act_y; y < tetris->act_y + tetris->curr_len_y; y++)
+	for (int i = tetris->act_y; i < tetris->act_y + tetris->curr_len_y; i++)
 	{
-		for (int x = tetris->act_x; x < tetris->act_x + tetris->curr_len_x; x++)
+		for (int j = tetris->act_x; j < tetris->act_x + tetris->curr_len_x; j++)
 		{
-			if (tetris->board[y][x + 1] != '0' && tetris->board[y][x + 1] != '1')
-				return (0);
+			if (i == 19 || (i>= 0 && i < 20 && j >= 0 && j < 10 &&
+			(tetris->board[i][j] == '1' && tetris->board[i + 1][j] != '0')))
+				return (1);
 		}
 	}
-	return (1);
-
+	return (0);
 }
 
-int			check_if_tetro_can_move_down(t_tetris *tetris)
+void			rotate_tetro_left(t_tetris *tetris)
 {
-	if (tetris->act_y + tetris->curr_len_y > 19)
-		return (0);
-	for (int y = tetris->act_y; y < tetris->curr_len_y; y++)
-	{
-		for (int x = tetris->act_x; x < tetris->curr_len_x; x++)
-		{
-			if (tetris->board[y + 1][x] != '0' && tetris->board[y + 1][x] != '1')
-				return (0);
-		}
-	}
-	return (1);
+	int			**old_tetro = tetris->curr_tetro;
+	int			prev_rotation = tetris->rotation;
 
+	tetris->prev_x = tetris->act_x;
+	tetris->prev_y = tetris->act_y;
+	tetris->old_rotation = tetris->rotation;
+	clear_old_tetro_location_on_board(tetris);
+	if (tetris->rotation == 1)
+		tetris->rotation = 4;
+	else
+		tetris->rotation -= 1;
+	if (tetris->rotation == 1)
+		get_current_tetro(tetris, tetris->tetro_type);
+	else if (tetris->rotation == 2)
+		get_current_tetro_2(tetris, tetris->tetro_type);
+	else if (tetris->rotation == 3)
+		get_current_tetro_3(tetris, tetris->tetro_type);
+	else if (tetris->rotation == 4)
+		get_current_tetro_4(tetris, tetris->tetro_type);
+	if (check_if_rotation_is_doable(tetris) == 1)
+		abort_new_rotation(tetris, old_tetro, prev_rotation);
+	else
+		free(old_tetro);
+}
+
+void			rotate_tetro_right(t_tetris *tetris)
+{
+	int			**old_tetro = tetris->curr_tetro;
+	int			prev_rotation = tetris->rotation;
+
+	tetris->prev_x = tetris->act_x;
+	tetris->prev_y = tetris->act_y;
+	tetris->old_rotation = tetris->rotation;
+	clear_old_tetro_location_on_board(tetris);
+	if (tetris->rotation == 4)
+		tetris->rotation = 1;
+	else
+		tetris->rotation += 1;
+	if (tetris->rotation == 1)
+		get_current_tetro(tetris, tetris->tetro_type);
+	else if (tetris->rotation == 2)
+		get_current_tetro_2(tetris, tetris->tetro_type);
+	else if (tetris->rotation == 3)
+		get_current_tetro_3(tetris, tetris->tetro_type);
+	else if (tetris->rotation == 4)
+		get_current_tetro_4(tetris, tetris->tetro_type);
+	if (check_if_rotation_is_doable(tetris) == 1)
+		abort_new_rotation(tetris, old_tetro, prev_rotation);
+	else
+		free(old_tetro);
 }
 
 int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris)
 {
 	int			direction = 0;
+	SDL_Event	event;
 
 	if (state[SDL_SCANCODE_LEFT])
 	{
@@ -176,6 +246,15 @@ int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris)
 		if (check_if_tetro_can_move_down(tetris) == 1)
 			direction = 2;
 	}
+	if (SDL_PollEvent(&event))
+	{
+		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q
+				&& tetris->tetro_type != 4)
+			rotate_tetro_left(tetris);
+		else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_e
+				&& tetris->tetro_type != 4)
+			rotate_tetro_right(tetris);
+	}
 	return (direction);
 }
 
@@ -189,20 +268,6 @@ Uint32			scan_exit_and_time(const Uint8 *state, Uint32 currently_pressed)
 	return (currently_pressed);
 }
 
-Uint32			move_tetro_left_right(t_tetris *tetris, Uint32 currently_pressed,
-		Uint32 last_pressed, int direction)
-{
-	if (currently_pressed > last_pressed + 100)
-	{
-		if (direction != 2)
-			tetris->act_x += direction;
-		else if (direction == 2)
-			tetris->act_y += 1;
-		return (currently_pressed);
-	}
-	return (last_pressed);
-}
-
 void			register_landed_tetro_in_board(t_tetris *tetris)
 {
 	char		a = 65 + tetris->tetro_type;
@@ -211,35 +276,53 @@ void			register_landed_tetro_in_board(t_tetris *tetris)
 	{
 		for (int j = tetris->act_x; j < tetris->act_x + tetris->curr_len_x; j++)
 		{
-			if (tetris->curr_tetro[i - tetris->act_y][j - tetris->act_x] != 0)
+			if (i >= 0 && tetris->curr_tetro[i - tetris->act_y][j - tetris->act_x] != 0)
+			{
 				tetris->board[i][j] = a;
+			}
 		}
 	}
 }
 
-int				update_tetris_board_state(t_tetris *tetris)
+void			clear_old_tetro_location_on_board(t_tetris *tetris)
 {
-	// CLEAR OLD LOCATION
 	for (int i = tetris->prev_y; i < tetris->prev_y + tetris->curr_len_y; i++)
 	{
 		for (int j = tetris->prev_x; j < tetris->prev_x + tetris->curr_len_x; j++)
-			tetris->board[i][j] = '0';
+		{
+			if (i >= 0 && i < 20 && j >= 0 && j < 10 && tetris->board[i][j] == '1')
+				tetris->board[i][j] = '0';
+		}
 	}
-	// PLACE NEW LOCATION
+}
+
+
+int				check_tetris_surroundings_on_board(t_tetris *tetris)
+{
 	for (int i = tetris->act_y; i < tetris->act_y + tetris->curr_len_y; i++)
 	{
 		for (int j = tetris->act_x; j < tetris->act_x + tetris->curr_len_x; j++)
 		{
-			if (tetris->curr_tetro[i - tetris->act_y][j - tetris->act_x] != 0)
+			if (i >= 0 && i < 20 && j >= 0 && j < 10 &&
+					tetris->curr_tetro[i - tetris->act_y][j - tetris->act_x] != 0)
 				tetris->board[i][j] = '1';
-			if (i == 19 || (tetris->board[i][j] == '1' &&
-						tetris->board[i + 1][j] != '0'))
-			{
-				register_landed_tetro_in_board(tetris);
-				tetris->spawned = 0;
-				print_tetris_board(tetris);
-			}
+			if (i == 19 || (i>= 0 && (tetris->board[i][j] == '1' &&
+							tetris->board[i + 1][j] != '0')))
+				return (1);
 		}
+	}
+	return (0);
+}
+
+int				update_tetris_board_state(t_tetris *tetris)
+{
+	clear_old_tetro_location_on_board(tetris);
+	// PLACE NEW LOCATION
+	if (check_tetris_surroundings_on_board(tetris) == 1)
+	{
+		register_landed_tetro_in_board(tetris);
+		tetris->spawned = 0;
+		return (tetris->spawned);
 	}
 	tetris->prev_y = tetris->act_y;
 	tetris->prev_x = tetris->act_x;

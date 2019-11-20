@@ -26,6 +26,8 @@ typedef struct			s_tetris
 	int					prev_x;
 	int					prev_y;
 	int					spawned;
+	int					old_rotation;
+	int					rotation;
 }						t_tetris;
 
 typedef struct			s_tetros
@@ -123,8 +125,39 @@ void			O_tetro_spawn(t_tetris *tetris);
 void			Z_tetro_spawn(t_tetris *tetris);
 void			get_current_tetro(t_tetris *tetris, int tetro);
 
+//	SPAWN_TETROS_2_C
+
+void			Z_tetro_spawn_2(t_tetris *tetris);
+void			T_tetro_spawn_2(t_tetris *tetris);
+void			L_tetro_spawn_2(t_tetris *tetris);
+void			J_tetro_spawn_2(t_tetris *tetris);
+void			I_tetro_spawn_2(t_tetris *tetris);
+void			get_current_tetro_2(t_tetris *tetris, int tetro);
+
+//	SPAWN_TETROS_3_C
+
+void			Z_tetro_spawn_3(t_tetris *tetris);
+void			T_tetro_spawn_3(t_tetris *tetris);
+void			L_tetro_spawn_3(t_tetris *tetris);
+void			J_tetro_spawn_3(t_tetris *tetris);
+void			S_tetro_spawn_3( t_tetris *tetris);
+void			I_tetro_spawn_3(t_tetris *tetris);
+void			get_current_tetro_3(t_tetris *tetris, int tetro);
+
+//	SPAWN_TETROS_4_C
+
+void			Z_tetro_spawn_4(t_tetris *tetris);
+void			T_tetro_spawn_4(t_tetris *tetris);
+void			L_tetro_spawn_4(t_tetris *tetris);
+void			J_tetro_spawn_4(t_tetris *tetris);
+void			S_tetro_spawn_4( t_tetris *tetris);
+void			I_tetro_spawn_4(t_tetris *tetris);
+void			get_current_tetro_4(t_tetris *tetris, int tetro);
+
 //	GAME_LOOP_C
 
+void			clear_old_tetro_location_on_board(t_tetris *tetris);
+int				update_tetris_board_state(t_tetris *tetris);
 Uint32			move_tetro_left_right(t_tetris *tetris, Uint32 currently_pressed,
 		Uint32 last_pressed, int direction);
 Uint32			scan_exit_and_time(const Uint8 *state, Uint32 currently_pressed);
@@ -133,4 +166,18 @@ void			spawn_new_tetro(t_sdl *sdl, t_tetris *tetris);
 void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris);
 void			game_loop(t_sdl *sdl, t_tetris *tetris);
 
+//	MOVE_TETRO_C
+
+Uint32			move_tetro_left_right(t_tetris *tetris, Uint32 currently_pressed,
+				Uint32 last_pressed, int direction);
+int				check_if_tetro_can_move_left(t_tetris *tetris);
+int				check_if_tetro_can_move_right(t_tetris *tetris);
+int				check_if_tetro_can_move_down(t_tetris *tetris);
+
+
+//	DEBUG_C
+
+void			print_tetro_board(t_tetris *tetris, int len_x, int len_y);
+void			print_tetris_board(t_tetris *tetris);
+void			check_letters_on_board(t_tetris *tetris);
 #endif
