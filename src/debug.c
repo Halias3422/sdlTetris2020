@@ -34,6 +34,7 @@ void			check_letters_on_board(t_tetris *tetris)
 	int			e = 0;
 	int			f = 0;
 	int			g = 0;
+	int			one = 0;
 
 	while (tetris->board[i])
 	{
@@ -54,8 +55,11 @@ void			check_letters_on_board(t_tetris *tetris)
 				g++;
 			else if (tetris->board[i][j] == 'E')
 				e++;
+			else if (tetris->board[i][j] == '1')
+				one++;
 			j++;
 		}
 		i++;
 	}
+	printf("ONE ON BOARD = %d\n", one);
 }

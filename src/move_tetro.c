@@ -48,13 +48,15 @@ int			check_if_tetro_can_move_down(t_tetris *tetris)
 }
 
 Uint32			move_tetro_left_right(t_tetris *tetris, Uint32 currently_pressed,
-		Uint32 last_pressed, int direction)
+				Uint32 last_pressed, int direction,Uint32 current_time, int *last_stand)
 {
+	if (current_time > last_pressed + 500 && *last_stand == 1)
+		*last_stand = 2;
 	if (currently_pressed > last_pressed + 100)
 	{
 		if (direction != 2)
 			tetris->act_x += direction;
-		else if (direction == 2)
+		else if (direction == 2 && check_if_tetro_is_grounded(tetris) == 0)
 			tetris->act_y += 1;
 		return (currently_pressed);
 	}

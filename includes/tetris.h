@@ -156,6 +156,7 @@ void			get_current_tetro_4(t_tetris *tetris, int tetro);
 
 //	GAME_LOOP_C
 
+int				check_if_tetro_is_grounded(t_tetris *tetris);
 void			clear_old_tetro_location_on_board(t_tetris *tetris);
 int				update_tetris_board_state(t_tetris *tetris, const Uint8 *state);
 Uint32			scan_exit_and_time(const Uint8 *state, Uint32 currently_pressed);
@@ -167,7 +168,7 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris);
 //	MOVE_TETRO_C
 
 Uint32			move_tetro_left_right(t_tetris *tetris, Uint32 currently_pressed,
-				Uint32 last_pressed, int direction);
+				Uint32 last_pressed, int direction, Uint32 current_time, int *last_stand);
 int				check_if_tetro_can_move_left(t_tetris *tetris);
 int				check_if_tetro_can_move_right(t_tetris *tetris);
 int				check_if_tetro_can_move_down(t_tetris *tetris);

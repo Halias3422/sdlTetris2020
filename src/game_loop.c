@@ -210,106 +210,40 @@ void			clear_old_tetro_location_on_board(t_tetris *tetris)
 {
 	for (int i = tetris->prev_y; i < tetris->prev_y + tetris->curr_len_y; i++)
 	{
-		printf("i = %d\n", i);
 		for (int j = tetris->prev_x; j < tetris->prev_x + tetris->curr_len_x; j++)
 		{
-			printf("\tj = %d\n", j);
-			if (i >= 0 && i < 20 && j >= 0 && j < 10/* && tetris->board[i][j] == '1'*/)
+			if (i >= 0 && i < 20 && j >= 0 && j < 10 &&
+				tetris->curr_tetro[i - tetris->prev_y][j - tetris->prev_x] == 1)
 				tetris->board[i][j] = '0';
 		}
 	}
-	printf("JE SORS\n");
 }
 
-
-int				check_tetris_surroundings_on_board(t_tetris *tetris)
+int				check_if_tetro_is_grounded(t_tetris *tetris)
 {
 	for (int i = tetris->act_y; i < tetris->act_y + tetris->curr_len_y; i++)
 	{
 		for (int j = tetris->act_x; j < tetris->act_x + tetris->curr_len_x; j++)
 		{
-			if (i >= 0 && i < 20 && j >= 0 && j < 10 &&
-					tetris->curr_tetro[i - tetris->act_y][j - tetris->act_x] != 0)
-				tetris->board[i][j] = '1';
-			if (i == 19 || (i>= 0 && (tetris->board[i][j] == '1' &&
-							tetris->board[i + 1][j] != '0')))
+			if (i == 19 || i + tetris->curr_len_y == 20 ||
+			(i>= 0 && (tetris->curr_tetro[i - tetris->act_y][j - tetris->act_x] == 1 &&
+			(i - tetris->act_y == tetris->curr_len_y - 1 || tetris->curr_tetro[i - tetris->act_y + 1][j - tetris->act_x] == 0) && tetris->board[i + 1][j] != '0')))
 				return (1);
 		}
 	}
 	return (0);
 }
 
-int				update_tetris_board_state(t_tetris *tetris, const Uint8 *state)
+void			update_board_with_new_location(t_tetris *tetris)
 {
-	clear_old_tetro_location_on_board(tetris);
-	// PLACE NEW LOCATION
-	if (check_tetris_surroundings_on_board(tetris) == 1)
+	for (int y = tetris->act_y; y < tetris->act_y + tetris->curr_len_y; y++)
 	{
-		register_landed_tetro_in_board(tetris);
-		tetris->spawned = 0;
-		return (tetris->spawned);
-	}
-	tetris->prev_y = tetris->act_y;
-	tetris->prev_x = tetris->act_x;
-	return (tetris->spawned);
-}
-
-void			last_chance_to_move_tetro(t_tetris *tetris, const Uint8 *state)
-{
-	Uint32		last_moved = SDL_GetTicks();
-	Uint32		curr_time = last_moved;
-	int			direction = 0;
-	SDL_Event	event;
-
-	while (curr_time < last_moved + 500)
-	{
-		tetris->prev_x = tetris->act_x;
-		tetris->prev_y = tetris->act_y;
-		curr_time = SDL_GetTicks();
-	if (state[SDL_SCANCODE_LEFT])
-	{
-		if (check_if_tetro_can_move_left(tetris) == 1)
-			direction = -1;
-		last_moved = SDL_GetTicks();
-	}
-	else if (state[SDL_SCANCODE_RIGHT])
-	{
-		if (check_if_tetro_can_move_right(tetris) == 1)
-			direction = 1;
-		last_moved = SDL_GetTicks();
-	}
-	move_tetro_left_right(tetris, curr_time, last_moved, direction);
-	if (SDL_PollEvent(&event))
-	{
-		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q
-				&& tetris->tetro_type != 4)
+		for (int x = tetris->act_x; x < tetris->act_x + tetris->curr_len_x; x++)
 		{
-			last_moved = SDL_GetTicks();
-			rotate_tetro_left(tetris);
-		}
-		else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_e
-				&& tetris->tetro_type != 4)
-		{
-			last_moved = SDL_GetTicks();
-			rotate_tetro_right(tetris);
+			if (tetris->curr_tetro[y - tetris->act_y][x - tetris->act_x] == 1)
+				tetris->board[y][x] = '1';
 		}
 	}
-		clear_old_tetro_location_on_board(tetris);
-		for (int i = tetris->act_y; i < tetris->act_y + tetris->curr_len_y; i++)
-		{
-			for (int j = tetris->act_x; j < tetris->act_x + tetris->curr_len_x; j++)
-			{
-				if (i >= 0 && i < 20 && j >= 0 && j < 10 &&
-					tetris->curr_tetro[i - tetris->act_y][j - tetris->act_x] != 0)
-				{
-					printf("jimprime un 1\n");
-					tetris->board[i][j] = '1';
-				}
-			}
-		}
-	}
-	print_tetris_board(tetris);
-	printf("act_x = %d act_y = %d\n", tetris->act_x, tetris->act_y);
 }
 
 void			game_loop(t_sdl *sdl, t_tetris *tetris)
@@ -318,7 +252,8 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 	Uint32		current_time;
 	int			direction = 0;
 	Uint32		last_pressed = 0;
-	Uint32		currently_pressed;
+	Uint32		currently_pressed = SDL_GetTicks();
+	int			last_stand = 0;
 	const Uint8	*state;
 
 	while (tetris->lost != 1)
@@ -329,22 +264,42 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		current_time = SDL_GetTicks();
 		if (tetris->spawned == 0)
 			spawn_new_tetro(sdl, tetris);
-		if ((currently_pressed =scan_exit_and_time(state,
+		if ((currently_pressed = scan_exit_and_time(state,
 						currently_pressed)) == (Uint32)-1)
 			return ;
 		direction = scan_keyboard_state(state, tetris);
 		last_pressed = move_tetro_left_right(tetris, currently_pressed,
-				last_pressed, direction);
+				last_pressed, direction, current_time, &last_stand);
 		if (current_time > last_time + 500)
 		{
-			if (tetris->act_y + tetris->curr_len_y <= 19)
+			if (tetris->act_y + tetris->curr_len_y < 20 && check_if_tetro_is_grounded(tetris) == 0)
 				tetris->act_y += 1;
+			printf("ICI tetris->act_y = %d\n", tetris->act_y);
 			last_time = current_time;
 		}
+		clear_old_tetro_location_on_board(tetris);
+		tetris->prev_x = tetris->act_x;
+		tetris->prev_y = tetris->act_y;
+		update_board_with_new_location(tetris);
+		if (check_if_tetro_is_grounded(tetris) == 1 && last_stand == 0)
+		{
+			printf("last stand a 1\n");
+			last_stand = 1;
+		}
+		if (check_if_tetro_is_grounded(tetris) == 0)
+		{
+			if (last_stand == 1)
+				last_stand = 0;
+		}
 		print_tetro_on_screen(sdl, tetris);
-		tetris->spawned = update_tetris_board_state(tetris, state);
-		if (tetris->spawned == 0)
-			last_chance_to_move_tetro(tetris, state);
+		if (last_stand == 2)
+		{
+			printf("last stand a 2\n");
+			register_landed_tetro_in_board(tetris);
+			print_tetris_board(tetris);
+			tetris->spawned = 0;
+			last_stand = 0;
+		}
 		SDL_Delay(1);
 	}
 }
