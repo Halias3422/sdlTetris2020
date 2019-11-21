@@ -115,7 +115,8 @@ void			T_tetro_spawn( t_tetris *tetris)
 	tetris->curr_tetro[0][1] = 1;
 	tetris->curr_len_x = 3;
 	tetris->curr_len_y = 2;
-	if (tetris->old_rotation == 2 && tetris->act_x > 0)
+	if ((tetris->old_rotation == 2 && tetris->act_x > 0) ||
+			(tetris->old_rotation == 4 && tetris->act_x >= 7))
 		tetris->act_x -= 1;
 }
 

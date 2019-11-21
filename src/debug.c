@@ -14,6 +14,7 @@ void			print_tetris_board(t_tetris *tetris)
 
 void			print_tetro_board(t_tetris *tetris, int len_x, int len_y)
 {
+	printf("tetro->rotation = %d\n", tetris->rotation);
 	printf("\n");
 	for (int i = 0; i < len_y; i++)
 	{

@@ -157,9 +157,7 @@ void			get_current_tetro_4(t_tetris *tetris, int tetro);
 //	GAME_LOOP_C
 
 void			clear_old_tetro_location_on_board(t_tetris *tetris);
-int				update_tetris_board_state(t_tetris *tetris);
-Uint32			move_tetro_left_right(t_tetris *tetris, Uint32 currently_pressed,
-		Uint32 last_pressed, int direction);
+int				update_tetris_board_state(t_tetris *tetris, const Uint8 *state);
 Uint32			scan_exit_and_time(const Uint8 *state, Uint32 currently_pressed);
 int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris);
 void			spawn_new_tetro(t_sdl *sdl, t_tetris *tetris);
@@ -174,6 +172,12 @@ int				check_if_tetro_can_move_left(t_tetris *tetris);
 int				check_if_tetro_can_move_right(t_tetris *tetris);
 int				check_if_tetro_can_move_down(t_tetris *tetris);
 
+//	ROTATION_TETRO_C
+
+void			abort_new_rotation(t_tetris *tetris, int prev_rotation);
+int				check_if_rotation_is_doable(t_tetris *tetris);
+void			rotate_tetro_left(t_tetris *tetris);
+void			rotate_tetro_right(t_tetris *tetris);
 
 //	DEBUG_C
 

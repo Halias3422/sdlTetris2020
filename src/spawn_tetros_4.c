@@ -35,7 +35,9 @@ void			I_tetro_spawn_4(t_tetris *tetris)
 	{
 		if (tetris->act_y + tetris->curr_len_y < 20)
 		tetris->act_y += 2;
-		if (tetris->act_x > 0 && tetris->act_x <= 8)
+		if (tetris->act_x == 1)
+			tetris->act_x -= 1;
+		if (tetris->act_x > 1 && tetris->act_x <= 8)
 			tetris->act_x -= 2;
 		else if (tetris->act_x == 9)
 			tetris->act_x -= 3;
@@ -92,10 +94,10 @@ void			T_tetro_spawn_4(t_tetris *tetris)
 	for (int i = 0; i < 3; i++)
 	{
 		tetris->curr_tetro[i] = (int*)malloc(sizeof(int) * 2);
-		tetris->curr_tetro[i][0] = 1;
-		tetris->curr_tetro[i][1] = 0;
+		tetris->curr_tetro[i][0] = 0;
+		tetris->curr_tetro[i][1] = 1;
 	}
-	tetris->curr_tetro[1][1] = 1;
+	tetris->curr_tetro[1][0] = 1;
 	tetris->curr_len_x = 2;
 	tetris->curr_len_y = 3;
 	if (tetris->old_rotation == 3 && tetris->act_y > 0)
