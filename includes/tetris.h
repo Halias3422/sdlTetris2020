@@ -67,7 +67,13 @@ typedef struct			s_tiles
 typedef struct			s_sdl
 {
 	float				disp_size;
-	int					screen_width;
+	int					playground_x;
+	int					playground_y;
+	int					playground_offset_x;
+	int					playground_offset_y;
+	int					tetro_x;
+	int					tetro_y;
+	int					tetro_size;
 	SDL_Window			*window;
 	SDL_Renderer		*renderer;
 	SDL_Event			event;

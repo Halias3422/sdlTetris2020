@@ -31,22 +31,6 @@ int			check_if_tetro_can_move_right(t_tetris *tetris)
 
 }
 
-int			check_if_tetro_can_move_down(t_tetris *tetris)
-{
-	if (tetris->act_y + tetris->curr_len_y > 19)
-		return (0);
-	for (int y = tetris->act_y; y < tetris->curr_len_y; y++)
-	{
-		for (int x = tetris->act_x; x < tetris->curr_len_x; x++)
-		{
-			if (y >= 0 && tetris->board[y + 1][x] != '0' && tetris->board[y + 1][x] != '1')
-				return (0);
-		}
-	}
-	return (1);
-
-}
-
 Uint32			move_tetro_left_right(t_tetris *tetris, Uint32 currently_pressed,
 				Uint32 last_pressed, int direction,Uint32 current_time, int *last_stand)
 {

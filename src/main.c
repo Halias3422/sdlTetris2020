@@ -9,7 +9,13 @@ void			init_sdl_struct(t_sdl *sdl)
 	sdl->tetros = NULL;
 	sdl->tiles = NULL;
 	sdl->disp_size = 0.5;
-	sdl->screen_width = 1600;
+	sdl->playground_x = 672;
+	sdl->playground_y = 1312;
+	sdl->playground_offset_x = 0;
+	sdl->playground_offset_y = 0;
+	sdl->tetro_x = 0;
+	sdl->tetro_y = 0;
+	sdl->tetro_size = 64;
 }
 
 void			clean_sdl_struct(t_sdl *sdl)
@@ -71,10 +77,10 @@ void			setup_window_background(t_sdl *sdl)
 
 void			load_and_render_playground(t_sdl *sdl)
 {
-	SDL_Rect	dst = {(sdl->screen_width / 2) - (672 * sdl->disp_size) / 2,
-	   			       75 * sdl->disp_size,
-					   672 * sdl->disp_size,
-					   1312 * sdl->disp_size};
+	SDL_Rect	dst = {sdl->playground_offset_x,
+	   			       sdl->playground_offset_y,
+					   sdl->playground_x,
+					   sdl->playground_y};
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 	SDL_render_target(sdl, sdl->renderer, sdl->playground);
@@ -124,8 +130,14 @@ void			retreive_window_resolution(t_sdl *sdl)
 	if (display.w == 1600 && display.h == 900)
 		sdl->disp_size = 0.5;
 	else if (display.w == 1920 && display.h == 1080)
-		sdl->disp_size = 75;
-	sdl->screen_width = display.w;
+		sdl->disp_size = 0.75;
+	sdl->playground_x = 672 * sdl->disp_size;
+	sdl->playground_y = 1312 * sdl->disp_size;
+	sdl->playground_offset_x = (display.w / 2) - (sdl->playground_x / 2);
+	sdl->playground_offset_y = (display.h / 2) - (sdl->playground_y / 2);
+	sdl->tetro_x = sdl->playground_offset_x + (16 * sdl->disp_size);
+	sdl->tetro_y = sdl->playground_offset_y + (16 * sdl->disp_size);
+	sdl->tetro_size = 65 * sdl->disp_size;
 }
 
 int				main(void)

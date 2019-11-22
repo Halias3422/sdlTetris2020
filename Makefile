@@ -13,7 +13,7 @@ INC = $(addprefix $(INC_PATH), $(INCLUDES))
 SRC = $(addprefix $(SRC_PATH), $(SOURCES))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 
-FLAG += -Wall -Wextra #-fsanitize=address
+FLAG += -g -Wall -Wextra #-fsanitize=address
 
 all:
 	make $(NAME)
