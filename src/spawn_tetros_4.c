@@ -33,7 +33,7 @@ void			I_tetro_spawn_4(t_tetris *tetris)
 	tetris->curr_len_y = 1;
 	if (tetris->old_rotation == 1 || tetris->old_rotation == 3)
 	{
-		if (tetris->act_y + tetris->curr_len_y < 20)
+		if (tetris->act_y + tetris->curr_len_y < 24)
 		tetris->act_y += 2;
 		if (tetris->act_x == 1)
 			tetris->act_x -= 1;
@@ -78,7 +78,7 @@ void			L_tetro_spawn_4(t_tetris *tetris)
 	tetris->curr_len_x = 3;
 	tetris->curr_len_y = 2;
 	if ((tetris->old_rotation == 3 || tetris->old_rotation == 1) &&
-		tetris->act_y + tetris->curr_len_y < 20)
+		tetris->act_y + tetris->curr_len_y < 24)
 		tetris->act_y += 1;
 	if (tetris->old_rotation == 3 && tetris->act_x > 0)
 		tetris->act_x -= 1;
@@ -122,7 +122,7 @@ void			Z_tetro_spawn_4(t_tetris *tetris)
 	if (tetris->old_rotation == 3 && tetris->act_x > 0)
 		tetris->act_x -= 1;
 	if ((tetris->old_rotation == 3 || tetris->old_rotation == 1) &&
-			tetris->act_y + tetris->curr_len_y < 20)
+			tetris->act_y + tetris->curr_len_y < 24)
 		tetris->act_y += 1;
 }
 

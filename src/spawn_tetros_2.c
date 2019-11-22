@@ -19,7 +19,7 @@ void			S_tetro_spawn_2(t_tetris *tetris)
 		tetris->act_x -= 1;
 	while (tetris->act_x + tetris->offset_right > 9)
 			tetris->act_x--;
-	if ((tetris->old_rotation == 1 || tetris->old_rotation == 3) && tetris->act_y + tetris->curr_len_y < 19)
+	if ((tetris->old_rotation == 1 || tetris->old_rotation == 3) && tetris->act_y + tetris->curr_len_y < 23)
 		tetris->act_y += 1;
 }
 
@@ -35,7 +35,7 @@ void			I_tetro_spawn_2(t_tetris *tetris)
 	tetris->curr_len_y = 1;
 	if (tetris->old_rotation == 1 || tetris->old_rotation == 3)
 	{
-		if (tetris->act_y + tetris->curr_len_y < 20)
+		if (tetris->act_y + tetris->curr_len_y < 24)
 		tetris->act_y += 1;
 		if (tetris->act_x > 0 && tetris->act_x < 8)
 			tetris->act_x -= 1;
@@ -63,7 +63,7 @@ void			J_tetro_spawn_2(t_tetris *tetris)
 	tetris->curr_len_y = 2;
 	if (tetris->old_rotation == 1 || tetris->old_rotation == 3)
 	{
-		if (tetris->act_y + tetris->curr_len_y < 19)
+		if (tetris->act_y + tetris->curr_len_y < 23)
 			tetris->act_y += 1;
 		if (tetris->old_rotation == 1 && tetris->act_x > 0)
 			tetris->act_x -= 1;

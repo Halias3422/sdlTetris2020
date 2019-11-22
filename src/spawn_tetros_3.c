@@ -108,7 +108,7 @@ void			T_tetro_spawn_3(t_tetris *tetris)
 	if (tetris->old_rotation == 2 && tetris->act_x > 0)
 		tetris->act_x -= 1;
 	if ((tetris->old_rotation == 2 || tetris->old_rotation == 4) &&
-			tetris->act_y + tetris->curr_len_y < 20)
+			tetris->act_y + tetris->curr_len_y < 24)
 		tetris->act_y += 1;
 	if (tetris->old_rotation == 4 && tetris->act_x >= 7)
 		tetris->act_x -= 1;

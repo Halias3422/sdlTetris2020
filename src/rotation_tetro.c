@@ -21,7 +21,7 @@ int				check_if_rotation_is_doable(t_tetris *tetris)
 	{
 		for (int j = tetris->act_x; j < tetris->act_x + tetris->curr_len_x; j++)
 		{
-			if (i == 20 || (i>= 0 && i < 20 && j >= 0 && j < 10 &&
+			if (i == 24 || (i>= 0 && i < 24 && j >= 0 && j < 10 &&
 			(tetris->curr_tetro[i - tetris->act_y][j - tetris->act_x] == 1 &&
 			 tetris->board[i][j] != '0' && tetris->board[i][j] != '1')))
 				return (1);
@@ -78,7 +78,7 @@ int				rotate_tetro_right(t_tetris *tetris)
 		get_current_tetro_3(tetris, tetris->tetro_type);
 	else if (tetris->rotation == 4)
 		get_current_tetro_4(tetris, tetris->tetro_type);
-	while (tetris->act_y + tetris->curr_len_y > 20)
+	while (tetris->act_y + tetris->curr_len_y > 24)
 		tetris->act_y -= 1;
 	if (check_if_rotation_is_doable(tetris) == 1)
 	{

@@ -96,7 +96,7 @@ void			load_and_render_playground(t_sdl *sdl)
 
 void			clean_tetris_struct(t_tetris *tetris)
 {
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 24; i++)
 		free(tetris->board[i]);
 	free(tetris->board);
 	for (int i = 0; i < tetris->curr_len_y; i++)
@@ -106,15 +106,15 @@ void			clean_tetris_struct(t_tetris *tetris)
 
 void			init_tetris_struct(t_tetris *tetris)
 {
-	tetris->board = (char**)malloc(sizeof(char*) * (20 + 1));
-	for (int i = 0; i < 20; i++)
+	tetris->board = (char**)malloc(sizeof(char*) * (24 + 1));
+	for (int i = 0; i < 24; i++)
 	{
 		tetris->board[i] = (char*)malloc(sizeof(char) * (10 + 1));
 		for (int j = 0; j < 10; j++)
 			tetris->board[i][j] = '0';
 		tetris->board[i][10] = '\0';
 	}
-	tetris->board[20] = NULL;
+	tetris->board[24] = NULL;
 	tetris->score = 0;
 	tetris->lost = 0;
 	tetris->curr_tetro = NULL;
