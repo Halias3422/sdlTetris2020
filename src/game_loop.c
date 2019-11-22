@@ -1,6 +1,6 @@
 #include "../includes/tetris.h"
 
-void			spawn_new_tetro(t_sdl *sdl, t_tetris *tetris)
+void			spawn_new_tetro(t_tetris *tetris)
 {
 
 	check_letters_on_board(tetris);
@@ -102,12 +102,15 @@ SDL_Texture		*get_current_tetro_texture(t_sdl *sdl, t_tetris *tetris)
 void			render_all_grounded_tetros(t_sdl *sdl, t_tetris *tetris)
 {
 	int			i = 0;
-	SDL_Rect	dst = {708 + 12, 48 + 12, 48, 48};
+	SDL_Rect	dst = {(sdl->screen_width / 2) - ((672 * sdl->disp_size) / 2) + (16 * sdl->disp_size),
+					  (75 * sdl->disp_size) + (16 * sdl->disp_size),
+					  64 * sdl->disp_size,
+					  64 * sdl->disp_size};
 
 	while (tetris->board[i])
 	{
 		int j = 0;
-		dst.x = 708 + 12;
+		dst.x = (sdl->screen_width / 2) - ((672 * sdl->disp_size) / 2) + (16 * sdl->disp_size);
 		while (tetris->board[i][j])
 		{
 			if (tetris->board[i][j] == 'B')
@@ -124,21 +127,24 @@ void			render_all_grounded_tetros(t_sdl *sdl, t_tetris *tetris)
 				SDL_render_copy(sdl, sdl->renderer, sdl->tiles->red, NULL, &dst);
 			else if (tetris->board[i][j] == 'E')
 				SDL_render_copy(sdl, sdl->renderer, sdl->tiles->yellow, NULL, &dst);
-			dst.x += 48;
+			dst.x += 64 * sdl->disp_size;
 			j++;
 		}
-		dst.y += 48;
+		dst.y += 64 * sdl->disp_size;
 		i++;
 	}
 }
 
 void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 {
-	SDL_Rect	playground_dst = {708, 48, 504, 984};
-	SDL_Rect	dst = {708 + 12 + (((tetris->act_x + 1) * 48) - 48),
-		48 + 12 + (((tetris->act_y + 1) * 48) - 48),
-		tetris->curr_len_x * 48,
-		tetris->curr_len_y * 48};
+	SDL_Rect	playground_dst = {(sdl->screen_width / 2) - (672 * sdl->disp_size) / 2,
+	   							  75 * sdl->disp_size,
+								  672 * sdl->disp_size,
+								  1312 * sdl->disp_size};
+	SDL_Rect	dst = {(sdl->screen_width / 2) - (672 * sdl->disp_size) / 2  + (16 * sdl->disp_size) + (((tetris->act_x + 1) * (64 * sdl->disp_size) - (64 * sdl->disp_size))),
+					  (64 * sdl->disp_size) + (16 * sdl->disp_size) + (((tetris->act_y + 1) * (64 * sdl->disp_size)) - (64 *sdl->disp_size)),
+					  tetris->curr_len_x * (64 * sdl->disp_size),
+					  tetris->curr_len_y * (64 * sdl->disp_size)};
 
 	SDL_render_clear(sdl, sdl->renderer);
 	SDL_render_copy(sdl, sdl->renderer, sdl->playground, NULL, &playground_dst);
@@ -150,34 +156,34 @@ void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 
 int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris)
 {
-	int			direction = 0;
 	SDL_Event	event;
+	int			check = 0;
 
 	if (state[SDL_SCANCODE_LEFT])
 	{
-		if (check_if_tetro_can_move_left(tetris) == 1)
-			direction = -1;
+		if (check_if_tetro_can_move_left(tetris) == 1 && check++ == 0)
+			tetris->act_x -= 1;
 	}
 	else if (state[SDL_SCANCODE_RIGHT])
 	{
-		if (check_if_tetro_can_move_right(tetris) == 1)
-			direction = 1;
+		if (check_if_tetro_can_move_right(tetris) == 1 && check++ == 0)
+			tetris->act_x += 1;
 	}
 	else if (state[SDL_SCANCODE_DOWN])
 	{
-		if (check_if_tetro_can_move_down(tetris) == 1)
-			direction = 2;
+		if (check_if_tetro_can_move_down(tetris) == 1 && check++ == 0)
+			tetris->act_y += 1;
 	}
 	if (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q
 				&& tetris->tetro_type != 4)
-			rotate_tetro_left(tetris);
+			check = rotate_tetro_left(tetris);
 		else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_e
 				&& tetris->tetro_type != 4)
-			rotate_tetro_right(tetris);
+			check = rotate_tetro_right(tetris);
 	}
-	return (direction);
+	return (check);
 }
 
 Uint32			scan_exit_and_time(const Uint8 *state, Uint32 currently_pressed)
@@ -225,10 +231,18 @@ int				check_if_tetro_is_grounded(t_tetris *tetris)
 	{
 		for (int j = tetris->act_x; j < tetris->act_x + tetris->curr_len_x; j++)
 		{
-			if (i == 19 || i + tetris->curr_len_y == 20 ||
+			if (i + tetris->curr_len_y >= 20 ||
 			(i>= 0 && (tetris->curr_tetro[i - tetris->act_y][j - tetris->act_x] == 1 &&
-			(i - tetris->act_y == tetris->curr_len_y - 1 || tetris->curr_tetro[i - tetris->act_y + 1][j - tetris->act_x] == 0) && tetris->board[i + 1][j] != '0')))
+			(i - tetris->act_y == tetris->curr_len_y - 1 ||
+			tetris->curr_tetro[i - tetris->act_y + 1][j - tetris->act_x] == 0) &&
+			tetris->board[i + 1][j] != '0')))
+			{
+		//	if (i + tetris->curr_len_y >= 20)
+		//			printf("fautif 2\n");
+		//		printf("grounded i = %d act_y = %d curr_len = %d\n", i, tetris->act_y, tetris->curr_len_y);
+		//		exit(0);
 				return (1);
+			}
 		}
 	}
 	return (0);
@@ -248,6 +262,56 @@ void			update_board_with_new_location(t_tetris *tetris)
 
 void			game_loop(t_sdl *sdl, t_tetris *tetris)
 {
+	Uint32		last_turn = SDL_GetTicks();
+	Uint32		last_moved = 0;
+	Uint32		current_time;
+	int			last_stand = 0;
+	const Uint8	*state;
+
+	while (tetris->lost != 1)
+	{
+		state = SDL_GetKeyboardState(NULL);
+		SDL_PumpEvents();
+		current_time = SDL_GetTicks();
+		if (tetris->spawned == 0)
+			spawn_new_tetro(tetris);
+		tetris->prev_x = tetris->act_x;
+		tetris->prev_y = tetris->act_y;
+		if (state[SDL_SCANCODE_ESCAPE])
+			return ;
+		if (current_time > last_moved + 100 && scan_keyboard_state(state, tetris) > 0)
+			last_moved = SDL_GetTicks();
+		if (current_time > last_turn + 500)
+		{
+			if (check_if_tetro_can_move_down(tetris) == 1)
+				tetris->act_y += 1;
+			last_turn = current_time;
+		}
+		clear_old_tetro_location_on_board(tetris);
+		print_tetro_on_screen(sdl, tetris);
+		if (check_if_tetro_is_grounded(tetris) == 0)
+			last_stand = 0;
+		else if (last_stand == 0 && check_if_tetro_is_grounded(tetris) == 1)
+			last_stand = 1;
+		else if (check_if_tetro_is_grounded(tetris) == 1 && last_stand == 1 &&
+				current_time > last_moved + 100)
+			last_stand = 2;
+		update_board_with_new_location(tetris);
+		if (last_stand == 2)
+		{
+			printf("act_x = %d act_y = %d\n", tetris->act_x, tetris->act_y);
+			register_landed_tetro_in_board(tetris);
+			print_tetris_board(tetris);
+			tetris->spawned = 0;
+			last_stand = 0;
+		}
+		SDL_Delay(1);
+	}
+}
+
+/*
+void			game_loop(t_sdl *sdl, t_tetris *tetris)
+{
 	Uint32		last_time = 0;
 	Uint32		current_time;
 	int			direction = 0;
@@ -263,7 +327,7 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		SDL_PumpEvents();
 		current_time = SDL_GetTicks();
 		if (tetris->spawned == 0)
-			spawn_new_tetro(sdl, tetris);
+			spawn_new_tetro(tetris);
 		if ((currently_pressed = scan_exit_and_time(state,
 						currently_pressed)) == (Uint32)-1)
 			return ;
@@ -303,3 +367,4 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		SDL_Delay(1);
 	}
 }
+*/

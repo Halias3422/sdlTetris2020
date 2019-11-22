@@ -8,6 +8,8 @@ void			init_sdl_struct(t_sdl *sdl)
 	sdl->playground = NULL;
 	sdl->tetros = NULL;
 	sdl->tiles = NULL;
+	sdl->disp_size = 0.5;
+	sdl->screen_width = 1600;
 }
 
 void			clean_sdl_struct(t_sdl *sdl)
@@ -69,7 +71,10 @@ void			setup_window_background(t_sdl *sdl)
 
 void			load_and_render_playground(t_sdl *sdl)
 {
-	SDL_Rect	dst = {708, 48, 504, 984};
+	SDL_Rect	dst = {(sdl->screen_width / 2) - (672 * sdl->disp_size) / 2,
+	   			       75 * sdl->disp_size,
+					   672 * sdl->disp_size,
+					   1312 * sdl->disp_size};
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 	SDL_render_target(sdl, sdl->renderer, sdl->playground);
@@ -110,6 +115,19 @@ void			init_tetris_struct(t_tetris *tetris)
 	tetris->spawned = 0;
 }
 
+void			retreive_window_resolution(t_sdl *sdl)
+{
+	SDL_DisplayMode	display;
+
+	if (SDL_GetDesktopDisplayMode(0, &display) != 0)
+		failure_exit_program("Getting Display Mode", sdl);
+	if (display.w == 1600 && display.h == 900)
+		sdl->disp_size = 0.5;
+	else if (display.w == 1920 && display.h == 1080)
+		sdl->disp_size = 75;
+	sdl->screen_width = display.w;
+}
+
 int				main(void)
 {
 	t_sdl		sdl;
@@ -119,12 +137,12 @@ int				main(void)
 	SDL_init_window(&sdl);
 	SDL_init_renderer(&sdl);
 	SDL_init_img(&sdl);
+	retreive_window_resolution(&sdl);
 	setup_window_background(&sdl);
 	load_and_render_playground(&sdl);
 	load_tetros_img(&sdl);
 	load_tiles_img(&sdl);
 	init_tetris_struct(&tetris);
-
 	game_loop(&sdl, &tetris);
 
 	clean_tetris_struct(&tetris);
