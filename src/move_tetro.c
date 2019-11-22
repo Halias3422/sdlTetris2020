@@ -8,7 +8,8 @@ int			check_if_tetro_can_move_left(t_tetris *tetris)
 	{
 		for (int x = tetris->act_x; x < tetris->act_x + tetris->curr_len_x; x++)
 		{
-			if (y >= 0 && tetris->board[y][x - 1] != '0' && tetris->board[y][x - 1] != '1')
+			if (y >= 0 && tetris->curr_tetro[y - tetris->act_y][x - tetris->act_x] == 1 &&
+					tetris->board[y][x - 1] != '0' && tetris->board[y][x - 1] != '1')
 				return (0);
 		}
 	}
@@ -23,7 +24,8 @@ int			check_if_tetro_can_move_right(t_tetris *tetris)
 	{
 		for (int x = tetris->act_x; x < tetris->act_x + tetris->curr_len_x; x++)
 		{
-			if (y >= 0 && tetris->board[y][x + 1] != '0' && tetris->board[y][x + 1] != '1')
+			if (y >= 0 && tetris->curr_tetro[y - tetris->act_y][x - tetris->act_x] == 1 &&
+					tetris->board[y][x + 1] != '0' && tetris->board[y][x + 1] != '1')
 				return (0);
 		}
 	}

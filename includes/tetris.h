@@ -10,6 +10,12 @@
 
 # define DARK_BLUE {0, 25, 51, 255}
 
+typedef struct			s_spawning
+{
+	int					tetro_type;
+	struct s_spawning	*next;
+}						t_spawning;
+
 typedef struct			s_tetris
 {
 	char				**board;
@@ -17,6 +23,8 @@ typedef struct			s_tetris
 	int					lost;
 	int					tetro_type;
 	int					**curr_tetro;
+	int					stored_tetro_type;
+	int					retreive_stored_tetro;
 	int					curr_len_x;
 	int					curr_len_y;
 	int					offset_left;
@@ -26,6 +34,7 @@ typedef struct			s_tetris
 	int					prev_x;
 	int					prev_y;
 	int					spawned;
+	t_spawning			*next_tetro;
 	int					old_rotation;
 	int					rotation;
 }						t_tetris;
@@ -62,6 +71,7 @@ typedef struct			s_tiles
 	SDL_Texture			*purple;
 	SDL_Texture			*red;
 	SDL_Texture			*yellow;
+	SDL_Texture			*white;
 }						t_tiles;
 
 typedef struct			s_sdl
@@ -79,12 +89,17 @@ typedef struct			s_sdl
 	SDL_Event			event;
 	SDL_Surface			*img_load;
 	SDL_Texture			*playground;
+	SDL_Texture			*stored_tetro;
+	SDL_Texture			*next_tetro;
 	struct s_tetros		*tetros;
 	struct s_tiles		*tiles;
+	struct s_tetris		*stored;
+	struct s_tetris		*next_t;
 }						t_sdl;
 
 //	MAIN_C
 
+void			clean_tetris_struct(t_tetris *tetris);
 void			failure_exit_program(char *error, t_sdl *sdl);
 
 //	SDL_FUNCTIONS_C
@@ -188,8 +203,15 @@ int				check_if_rotation_is_doable(t_tetris *tetris);
 int				rotate_tetro_left(t_tetris *tetris);
 int				rotate_tetro_right(t_tetris *tetris);
 
+//	CLEAR_LINES_C
+
+void			check_for_full_lines(t_sdl *sdl, t_tetris *tetris);
+void			display_cleared_lines(t_sdl *sdl, t_tetris *tetris,
+				int *cleared_lines, int nb_cleared);
+
 //	DEBUG_C
 
+void			print_next_tetro_list(t_tetris *tetris);
 void			print_tetro_board(t_tetris *tetris, int len_x, int len_y);
 void			print_tetris_board(t_tetris *tetris);
 void			check_letters_on_board(t_tetris *tetris);

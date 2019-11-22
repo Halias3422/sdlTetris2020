@@ -6,6 +6,7 @@ void			init_sdl_struct(t_sdl *sdl)
 	sdl->renderer = NULL;
 	sdl->img_load = NULL;
 	sdl->playground = NULL;
+	sdl->stored_tetro = NULL;
 	sdl->tetros = NULL;
 	sdl->tiles = NULL;
 	sdl->disp_size = 0.5;
@@ -49,6 +50,9 @@ void			clean_sdl_struct(t_sdl *sdl)
 	SDL_DestroyTexture(sdl->tiles->purple);
 	SDL_DestroyTexture(sdl->tiles->yellow);
 	SDL_DestroyTexture(sdl->tiles->blue);
+	SDL_DestroyTexture(sdl->tiles->white);
+	SDL_DestroyTexture(sdl->stored_tetro);
+	SDL_DestroyTexture(sdl->next_tetro);
 	if (sdl->tetros)
 		free(sdl->tetros);
 	if (sdl->tiles)
@@ -84,6 +88,12 @@ void			load_and_render_playground(t_sdl *sdl)
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 	SDL_render_target(sdl, sdl->renderer, sdl->playground);
+	if ((sdl->stored_tetro = IMG_LoadTexture(sdl->renderer,
+					"img/stored_background.png")) == NULL)
+		failure_exit_program("Converting Stored Background to Texture", sdl);
+	if ((sdl->next_tetro = IMG_LoadTexture(sdl->renderer,
+					"img/next_background.png")) == NULL)
+		failure_exit_program("Converting Next Tetro Background to Texture", sdl);
 	if ((sdl->playground = IMG_LoadTexture(sdl->renderer,
 					"img/big_playground.png")) == NULL)
 		failure_exit_program("Converting playground to Texture", sdl);
@@ -96,12 +106,42 @@ void			load_and_render_playground(t_sdl *sdl)
 
 void			clean_tetris_struct(t_tetris *tetris)
 {
+	t_spawning	*tmp;
+
 	for (int i = 0; i < 24; i++)
-		free(tetris->board[i]);
+	free(tetris->board[i]);
 	free(tetris->board);
 	for (int i = 0; i < tetris->curr_len_y; i++)
 		free(tetris->curr_tetro[i]);
 	free(tetris->curr_tetro);
+	while (tetris->next_tetro != NULL)
+	{
+		tmp = tetris->next_tetro;
+		tetris->next_tetro = tetris->next_tetro->next;
+		free(tmp);
+	}
+
+}
+
+void			fill_tetris_list_next_tetro(t_spawning *next_tetro)
+{
+	t_spawning	*tmp;
+	int			prev_type;
+
+	srand(time(NULL));
+	next_tetro->tetro_type = rand() % 7;
+	prev_type = next_tetro->tetro_type;
+	for (int i = 0; i < 3; i++)
+	{
+		tmp = (t_spawning*)malloc(sizeof(t_spawning));
+		tmp->tetro_type = rand() % 7;
+		while (tmp->tetro_type == prev_type)
+			tmp->tetro_type = rand() % 7;
+		prev_type = tmp->tetro_type;
+		tmp->next = NULL;
+		next_tetro->next = tmp;
+		next_tetro = next_tetro->next;
+	}
 }
 
 void			init_tetris_struct(t_tetris *tetris)
@@ -119,6 +159,10 @@ void			init_tetris_struct(t_tetris *tetris)
 	tetris->lost = 0;
 	tetris->curr_tetro = NULL;
 	tetris->spawned = 0;
+	tetris->stored_tetro_type = -1;
+	tetris->retreive_stored_tetro = 0;
+	tetris->next_tetro = (t_spawning*)malloc(sizeof(t_spawning));;
+	fill_tetris_list_next_tetro(tetris->next_tetro);
 }
 
 void			retreive_window_resolution(t_sdl *sdl)

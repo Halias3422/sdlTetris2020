@@ -53,6 +53,13 @@ void			load_yellow_tile(t_sdl *sdl)
 		failure_exit_program("Loading Yellow tile", sdl);
 }
 
+void			load_white_tile(t_sdl *sdl)
+{
+	if ((sdl->tiles->white = IMG_LoadTexture(sdl->renderer,
+					"img/tiles/white_tetro.png")) == NULL)
+		failure_exit_program("Loading White Tile", sdl);
+}
+
 void			load_tiles_img(t_sdl *sdl)
 {
 	sdl->tiles = (t_tiles*)malloc(sizeof(t_tiles));
@@ -63,4 +70,5 @@ void			load_tiles_img(t_sdl *sdl)
 	load_purple_tile(sdl);
 	load_red_tile(sdl);
 	load_yellow_tile(sdl);
+	load_white_tile(sdl);
 }

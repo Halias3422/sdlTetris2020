@@ -1,5 +1,16 @@
 #include "../includes/tetris.h"
 
+void			print_next_tetro_list(t_tetris *tetris)
+{
+	printf("DEBUG maillon next_tetro = [%p]\n", tetris->next_tetro);
+	printf("maillon next next = [%p]\n", tetris->next_tetro->next);
+	while (tetris->next_tetro != NULL)
+	{
+		printf("next_tetro_type = %d\n", tetris->next_tetro->tetro_type);
+		tetris->next_tetro = tetris->next_tetro->next;
+	}
+}
+
 void			print_tetris_board(t_tetris *tetris)
 {
 	int i = 0;
