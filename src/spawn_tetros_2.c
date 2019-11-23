@@ -67,6 +67,8 @@ void			J_tetro_spawn_2(t_tetris *tetris)
 			tetris->act_y += 1;
 		if (tetris->old_rotation == 1 && tetris->act_x > 0)
 			tetris->act_x -= 1;
+		if (tetris->act_x + tetris->offset_right > 9)
+			tetris->act_x -= 1;
 	}
 }
 
@@ -127,6 +129,8 @@ void			Z_tetro_spawn_2(t_tetris *tetris)
 	tetris->curr_len_x = 3;
 	tetris->curr_len_y = 2;
 	if (tetris->old_rotation == 3 && tetris->act_x > 0)
+		tetris->act_x -= 1;
+	if (tetris->act_x + tetris->offset_right > 9)
 		tetris->act_x -= 1;
 }
 

@@ -30,6 +30,14 @@ void			SDL_init_img(t_sdl *sdl)
 		failure_exit_program("Initializing IMAGES", sdl);
 }
 
+SDL_Texture		*SDL_load_texture(t_sdl *sdl, SDL_Renderer *renderer,
+				SDL_Texture *texture, char *path)
+{
+	if ((texture = IMG_LoadTexture(renderer, path)) == NULL)
+		failure_exit_program("Loading Image on Texture", sdl);
+	return (texture);
+}
+
 void			SDL_render_clear(t_sdl *sdl, SDL_Renderer *renderer)
 {
 	if ((SDL_RenderClear(renderer)) != 0)

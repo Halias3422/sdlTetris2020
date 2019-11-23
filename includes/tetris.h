@@ -20,6 +20,8 @@ typedef struct			s_tetris
 {
 	char				**board;
 	int					score;
+	int					level;
+	int					level_cap;
 	int					lost;
 	int					tetro_type;
 	int					**curr_tetro;
@@ -38,6 +40,7 @@ typedef struct			s_tetris
 	t_spawning			*next_tetro;
 	int					old_rotation;
 	int					rotation;
+	int					turn_speed;
 }						t_tetris;
 
 typedef struct			s_tetros
@@ -75,20 +78,6 @@ typedef struct			s_tiles
 	SDL_Texture			*white;
 }						t_tiles;
 
-typedef struct			s_numbers
-{
-	SDL_Texture			*zero;
-	SDL_Texture			*one;
-	SDL_Texture			*two;
-	SDL_Texture			*three;
-	SDL_Texture			*four;
-	SDL_Texture			*five;
-	SDL_Texture			*six;
-	SDL_Texture			*seven;
-	SDL_Texture			*eight;
-	SDL_Texture			*nine;
-}						t_numbers;
-
 typedef struct			s_sdl
 {
 	float				disp_size;
@@ -106,7 +95,8 @@ typedef struct			s_sdl
 	SDL_Texture			*playground;
 	SDL_Texture			*stored_tetro;
 	SDL_Texture			*next_tetro;
-	struct	s_numbers	*numbers;
+	SDL_Texture			*score_window;
+	SDL_Texture			**numbers;
 	struct s_tetros		*tetros;
 	struct s_tiles		*tiles;
 	struct s_tetris		*stored;
@@ -120,6 +110,8 @@ void			failure_exit_program(char *error, t_sdl *sdl);
 
 //	SDL_FUNCTIONS_C
 
+SDL_Texture		*SDL_load_texture(t_sdl *sdl, SDL_Renderer *renderer,
+				SDL_Texture *texture, char *path);
 void			SDL_render_target(t_sdl *sdl, SDL_Renderer *renderer,
 				SDL_Texture *texture);
 void			SDL_render_copy(t_sdl *sdl, SDL_Renderer *renderer,
@@ -152,20 +144,6 @@ void			load_orange_tile(t_sdl *sdl);
 void			load_purple_tile(t_sdl *sdl);
 void			load_red_tile(t_sdl *sdl);
 void			load_yellow_tile(t_sdl *sdl);
-
-//	LOAD_NUMBERS_C
-
-void			load_number_zero(t_sdl *sdl);
-void			load_number_one(t_sdl *sdl);
-void			load_number_two(t_sdl *sdl);
-void			load_number_three(t_sdl *sdl);
-void			load_number_four(t_sdl *sdl);
-void			load_number_five(t_sdl *sdl);
-void			load_number_six(t_sdl *sdl);
-void			load_number_seven(t_sdl *sdl);
-void			load_number_eight(t_sdl *sdl);
-void			load_number_nine(t_sdl *sdl);
-void			load_numbers_img(t_sdl *sdl);
 
 //	SPAWN_TETROS_C
 

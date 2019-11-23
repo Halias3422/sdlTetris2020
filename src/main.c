@@ -14,6 +14,7 @@ void			init_sdl_struct(t_sdl *sdl)
 	sdl->playground_y = 1312;
 	sdl->playground_offset_x = 0;
 	sdl->playground_offset_y = 0;
+	sdl->numbers = NULL;
 	sdl->tetro_x = 0;
 	sdl->tetro_y = 0;
 	sdl->tetro_size = 64;
@@ -53,16 +54,9 @@ void			clean_sdl_struct(t_sdl *sdl)
 	SDL_DestroyTexture(sdl->tiles->white);
 	SDL_DestroyTexture(sdl->stored_tetro);
 	SDL_DestroyTexture(sdl->next_tetro);
-	SDL_DestroyTexture(sdl->numbers->zero);
-	SDL_DestroyTexture(sdl->numbers->one);
-	SDL_DestroyTexture(sdl->numbers->two);
-	SDL_DestroyTexture(sdl->numbers->three);
-	SDL_DestroyTexture(sdl->numbers->four);
-	SDL_DestroyTexture(sdl->numbers->five);
-	SDL_DestroyTexture(sdl->numbers->six);
-	SDL_DestroyTexture(sdl->numbers->seven);
-	SDL_DestroyTexture(sdl->numbers->eight);
-	SDL_DestroyTexture(sdl->numbers->nine);
+	for (int i = 0; i < 10; i++)
+		SDL_DestroyTexture(sdl->numbers[i]);
+	free(sdl->numbers);
 	if (sdl->tetros)
 		free(sdl->tetros);
 	if (sdl->tiles)
@@ -107,6 +101,9 @@ void			load_and_render_playground(t_sdl *sdl)
 	if ((sdl->playground = IMG_LoadTexture(sdl->renderer,
 					"img/big_playground.png")) == NULL)
 		failure_exit_program("Converting playground to Texture", sdl);
+	if ((sdl->score_window = IMG_LoadTexture(sdl->renderer,
+					"img/score_background.png")) == NULL)
+		failure_exit_program("Converting score to Texture", sdl);
 	SDL_render_clear(sdl, sdl->renderer);
 	//	SDL_QueryTexture(sdl->playground, NULL, NULL, &dst.w, &dst.h);
 	SDL_render_copy(sdl, sdl->renderer, sdl->playground, NULL, &dst);
@@ -166,12 +163,15 @@ void			init_tetris_struct(t_tetris *tetris)
 	}
 	tetris->board[24] = NULL;
 	tetris->score = 0;
+	tetris->level = 0;
+	tetris->level_cap = 100;
 	tetris->lost = 0;
 	tetris->curr_tetro = NULL;
 	tetris->spawned = 0;
 	tetris->stored_tetro_type = -1;
 	tetris->has_stored = 0;
 	tetris->retreive_stored_tetro = 0;
+	tetris->turn_speed = 500;
 	tetris->next_tetro = (t_spawning*)malloc(sizeof(t_spawning));;
 	fill_tetris_list_next_tetro(tetris->next_tetro);
 }
@@ -193,6 +193,31 @@ void			retreive_window_resolution(t_sdl *sdl)
 	sdl->tetro_x = sdl->playground_offset_x + (16 * sdl->disp_size);
 	sdl->tetro_y = sdl->playground_offset_y + (16 * sdl->disp_size);
 	sdl->tetro_size = 65 * sdl->disp_size;
+}
+
+void			load_numbers_img(t_sdl *sdl)
+{
+	sdl->numbers = (SDL_Texture**)malloc(sizeof(SDL_Texture*) * 10);
+	sdl->numbers[0] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[0],
+				"img/numbers/zero.png");
+	sdl->numbers[1] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[1],
+				"img/numbers/one.png");
+	sdl->numbers[2] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[2],
+				"img/numbers/two.png");
+	sdl->numbers[3] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[3],
+				"img/numbers/three.png");
+	sdl->numbers[4] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[4],
+				"img/numbers/four.png");
+	sdl->numbers[5] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[5],
+				"img/numbers/five.png");
+	sdl->numbers[6] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[6],
+				"img/numbers/six.png");
+	sdl->numbers[7] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[7],
+				"img/numbers/seven.png");
+	sdl->numbers[8] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[8],
+				"img/numbers/eight.png");
+	sdl->numbers[9] = SDL_load_texture(sdl, sdl->renderer, sdl->numbers[9],
+				"img/numbers/nine.png");
 }
 
 int				main(void)

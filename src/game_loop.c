@@ -215,6 +215,46 @@ void			print_stored_tetro_window(t_sdl *sdl, t_tetris *tetris)
 	clean_stored_struct(sdl->stored);
 }
 
+void			print_score_window(t_sdl *sdl, t_tetris *tetris)
+{
+	SDL_Rect	dst = {sdl->playground_offset_x - 32 - (320 * sdl->disp_size),
+					   ((sdl->playground_offset_y * 2 + 368 * sdl->disp_size) +
+						((sdl->playground_y - (sdl->playground_offset_y + 368 *
+						 sdl->disp_size) - 432 * sdl->disp_size) / 2)),
+					   320 * sdl->disp_size,
+					   432 * sdl->disp_size};
+	SDL_Rect	level_dst = {sdl->playground_offset_x - 32 - (320 * sdl->disp_size) + ( 32 *sdl->disp_size) + (32 * sdl->disp_size * 7),
+							 ((sdl->playground_offset_y * 2 + 368 * sdl->disp_size) + ((sdl->playground_y - (sdl->playground_offset_y + 368 *sdl->disp_size) - 432 * sdl->disp_size) / 2)) + (86 *sdl->disp_size),
+							 30 * sdl->disp_size,
+							 54 * sdl->disp_size};
+	SDL_Rect	score_dst = {sdl->playground_offset_x - 32 - (320 * sdl->disp_size) + (32 * sdl->disp_size) + (32 * sdl->disp_size * 7),
+					   ((sdl->playground_offset_y * 2 + 368 * sdl->disp_size) +
+						((sdl->playground_y - (sdl->playground_offset_y + 368 *
+						 sdl->disp_size) - 432 * sdl->disp_size) / 2)) + (214 *sdl->disp_size),
+					   30 * sdl->disp_size,
+					   54 * sdl->disp_size};
+	int			score = tetris->score;
+	int			level = tetris->level;
+
+	SDL_render_copy(sdl, sdl->renderer, sdl->score_window, NULL, &dst);
+	while (level >= 0)
+	{
+		SDL_render_copy(sdl, sdl->renderer, sdl->numbers[level % 10], NULL, &level_dst);
+		level = level / 10;
+		level_dst.x -= 32 * sdl->disp_size;
+		if (level == 0)
+			break ;
+	}
+	while (score >= 0)
+	{
+		SDL_render_copy(sdl, sdl->renderer, sdl->numbers[score % 10], NULL, &score_dst);
+		score = score / 10;
+		score_dst.x -= 32 * sdl->disp_size;
+		if (score == 0)
+			break ;
+	}
+}
+
 void			print_next_tetros_window(t_sdl *sdl, t_tetris *tetris)
 {
 	t_spawning	*tmp = tetris->next_tetro;
@@ -317,6 +357,7 @@ void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 		render_ghost_tetro(sdl, tetris);
 	print_stored_tetro_window(sdl, tetris);
 	print_next_tetros_window(sdl, tetris);
+	print_score_window(sdl, tetris);
 	SDL_RenderPresent(sdl->renderer);
 }
 
@@ -463,12 +504,15 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		tetris->prev_y = tetris->act_y;
 		if (state[SDL_SCANCODE_ESCAPE])
 			return ;
-		if (current_time > last_moved + 70 && scan_keyboard_state(state, tetris) > 0)
+		if (current_time > last_moved + 40 && scan_keyboard_state(state, tetris) > 0)
 			last_moved = SDL_GetTicks();
-		if (current_time > last_turn + 500)
+		if (current_time > last_turn + tetris->turn_speed)
 		{
 			if (check_if_tetro_is_grounded(tetris) == 0)
+			{
+				last_moved = current_time;
 				tetris->act_y += 1;
+			}
 			last_turn = current_time;
 		}
 		clear_old_tetro_location_on_board(tetris);
@@ -478,7 +522,7 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		else if (last_stand == 0 && check_if_tetro_is_grounded(tetris) == 1)
 			last_stand = 1;
 		else if (check_if_tetro_is_grounded(tetris) == 1 && last_stand == 1 &&
-				current_time > last_moved + 500)
+				current_time > last_moved + tetris->turn_speed)
 			last_stand = 2;
 		update_board_with_new_location(tetris);
 		if (last_stand == 2)

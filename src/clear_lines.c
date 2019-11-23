@@ -52,6 +52,11 @@ void			check_for_full_lines(t_sdl *sdl, t_tetris *tetris)
 	{
 		display_cleared_lines(sdl, tetris, cleared_lines, nb_cleared);
 		tetris->score += 100 + ((200 * nb_cleared) * (0.5 * nb_cleared));
-		printf("tetris->score = %d\n", tetris->score);
+		while (tetris->score > tetris->level_cap)
+		{
+			tetris->level += 1;
+			tetris->level_cap *= 1.5;
+			tetris->turn_speed -= 15;
+		}
 	}
 }
