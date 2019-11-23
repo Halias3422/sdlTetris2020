@@ -53,6 +53,16 @@ void			clean_sdl_struct(t_sdl *sdl)
 	SDL_DestroyTexture(sdl->tiles->white);
 	SDL_DestroyTexture(sdl->stored_tetro);
 	SDL_DestroyTexture(sdl->next_tetro);
+	SDL_DestroyTexture(sdl->numbers->zero);
+	SDL_DestroyTexture(sdl->numbers->one);
+	SDL_DestroyTexture(sdl->numbers->two);
+	SDL_DestroyTexture(sdl->numbers->three);
+	SDL_DestroyTexture(sdl->numbers->four);
+	SDL_DestroyTexture(sdl->numbers->five);
+	SDL_DestroyTexture(sdl->numbers->six);
+	SDL_DestroyTexture(sdl->numbers->seven);
+	SDL_DestroyTexture(sdl->numbers->eight);
+	SDL_DestroyTexture(sdl->numbers->nine);
 	if (sdl->tetros)
 		free(sdl->tetros);
 	if (sdl->tiles)
@@ -160,6 +170,7 @@ void			init_tetris_struct(t_tetris *tetris)
 	tetris->curr_tetro = NULL;
 	tetris->spawned = 0;
 	tetris->stored_tetro_type = -1;
+	tetris->has_stored = 0;
 	tetris->retreive_stored_tetro = 0;
 	tetris->next_tetro = (t_spawning*)malloc(sizeof(t_spawning));;
 	fill_tetris_list_next_tetro(tetris->next_tetro);
@@ -198,6 +209,7 @@ int				main(void)
 	load_and_render_playground(&sdl);
 	load_tetros_img(&sdl);
 	load_tiles_img(&sdl);
+	load_numbers_img(&sdl);
 	init_tetris_struct(&tetris);
 	game_loop(&sdl, &tetris);
 

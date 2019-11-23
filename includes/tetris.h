@@ -34,6 +34,7 @@ typedef struct			s_tetris
 	int					prev_x;
 	int					prev_y;
 	int					spawned;
+	int					has_stored;
 	t_spawning			*next_tetro;
 	int					old_rotation;
 	int					rotation;
@@ -74,6 +75,20 @@ typedef struct			s_tiles
 	SDL_Texture			*white;
 }						t_tiles;
 
+typedef struct			s_numbers
+{
+	SDL_Texture			*zero;
+	SDL_Texture			*one;
+	SDL_Texture			*two;
+	SDL_Texture			*three;
+	SDL_Texture			*four;
+	SDL_Texture			*five;
+	SDL_Texture			*six;
+	SDL_Texture			*seven;
+	SDL_Texture			*eight;
+	SDL_Texture			*nine;
+}						t_numbers;
+
 typedef struct			s_sdl
 {
 	float				disp_size;
@@ -91,6 +106,7 @@ typedef struct			s_sdl
 	SDL_Texture			*playground;
 	SDL_Texture			*stored_tetro;
 	SDL_Texture			*next_tetro;
+	struct	s_numbers	*numbers;
 	struct s_tetros		*tetros;
 	struct s_tiles		*tiles;
 	struct s_tetris		*stored;
@@ -136,6 +152,20 @@ void			load_orange_tile(t_sdl *sdl);
 void			load_purple_tile(t_sdl *sdl);
 void			load_red_tile(t_sdl *sdl);
 void			load_yellow_tile(t_sdl *sdl);
+
+//	LOAD_NUMBERS_C
+
+void			load_number_zero(t_sdl *sdl);
+void			load_number_one(t_sdl *sdl);
+void			load_number_two(t_sdl *sdl);
+void			load_number_three(t_sdl *sdl);
+void			load_number_four(t_sdl *sdl);
+void			load_number_five(t_sdl *sdl);
+void			load_number_six(t_sdl *sdl);
+void			load_number_seven(t_sdl *sdl);
+void			load_number_eight(t_sdl *sdl);
+void			load_number_nine(t_sdl *sdl);
+void			load_numbers_img(t_sdl *sdl);
 
 //	SPAWN_TETROS_C
 

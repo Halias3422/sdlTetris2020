@@ -16,11 +16,13 @@ int				check_if_tetro_type_already_in_list(int tetro_type, t_spawning *next_tetr
 void			spawn_new_tetro(t_tetris *tetris)
 {
 	t_spawning	*head = tetris->next_tetro;
+	int			tmp_stored = 0;
 
 	if (tetris->stored_tetro_type != -1 && tetris->retreive_stored_tetro == 1)
 	{
+		tmp_stored = tetris->tetro_type;
 		tetris->tetro_type = tetris->stored_tetro_type;
-		tetris->stored_tetro_type = -1;
+		tetris->stored_tetro_type = tmp_stored;
 		tetris->retreive_stored_tetro = 0;
 	}
 	else
@@ -307,7 +309,8 @@ void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 	}
 	SDL_render_clear(sdl, sdl->renderer);
 	SDL_render_copy(sdl, sdl->renderer, sdl->playground, NULL, &playground_dst);
-	SDL_render_copy(sdl, sdl->renderer, get_current_tetro_texture(sdl, tetris),
+	if (tetris->spawned == 1)
+		SDL_render_copy(sdl, sdl->renderer, get_current_tetro_texture(sdl, tetris),
 				&src, &dst);
 	render_all_grounded_tetros(sdl, tetris);
 	if (tetris->spawned == 1)
@@ -350,11 +353,17 @@ int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris)
 			while (check_if_tetro_is_grounded(tetris) != 1)
 				tetris->act_y += 1;
 		}
-		else if (event.key.keysym.sym == SDLK_s && tetris->stored_tetro_type == -1)
+		else if (event.key.keysym.sym == SDLK_s && tetris->has_stored == 0)
 		{
-			tetris->stored_tetro_type = tetris->tetro_type;
-			clear_old_tetro_location_on_board(tetris);
+			if (tetris->stored_tetro_type == -1)
+			{
+				tetris->stored_tetro_type = tetris->tetro_type;
+				clear_old_tetro_location_on_board(tetris);
+			}
+			else
+				tetris->retreive_stored_tetro = 1;
 			tetris->spawned = 0;
+			tetris->has_stored = 1;
 		}
 		else if (event.key.keysym.sym == SDLK_g && tetris->stored_tetro_type != -1)
 		{
@@ -476,6 +485,7 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		{
 			//NEED TO REORDER TO NOT LOOSE IF CLEARED LINE
 			tetris->spawned = 0;
+			tetris->has_stored = 0;
 			tetris->lost = register_landed_tetro_in_board(tetris);
 			check_for_full_lines(sdl, tetris);
 			last_stand = 0;

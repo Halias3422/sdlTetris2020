@@ -10,14 +10,24 @@ void			display_cleared_lines(t_sdl *sdl, t_tetris *tetris,
 			tetris->board[cleared_lines[i]][x] = 'W';
 	}
 	print_tetro_on_screen(sdl, tetris);
-	SDL_Delay(150);
-	// REMOVE FULL LINES FROM BOARD
+	SDL_Delay(50);
+	for (int i = 0; i <= nb_cleared; i++)
+	{
+		for (int x = 0; x < 10; x++)
+			tetris->board[cleared_lines[i]][x] = '0';
+	}
+	print_tetro_on_screen(sdl, tetris);
+	SDL_Delay(10);
 	for (int j = 0; j <= nb_cleared; j++)
 	{
 		for (int y = cleared_lines[j]; y > 0; y--)
 		{
 			for (int x = 0; x < 10; x++)
+			{
 				tetris->board[y][x] = tetris->board[y - 1][x];
+			}
+			print_tetro_on_screen(sdl, tetris);
+			SDL_Delay(2);
 		}
 	}
 }
