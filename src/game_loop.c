@@ -348,6 +348,7 @@ void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 		}
 	}
 	SDL_render_clear(sdl, sdl->renderer);
+	setup_window_background(sdl);
 	SDL_render_copy(sdl, sdl->renderer, sdl->playground, NULL, &playground_dst);
 	if (tetris->spawned == 1)
 		SDL_render_copy(sdl, sdl->renderer, get_current_tetro_texture(sdl, tetris),

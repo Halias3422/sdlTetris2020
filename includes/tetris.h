@@ -8,7 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-# define DARK_BLUE {0, 25, 51, 255}
+# define DARK_BLUE {0, 0, 0, 255}
 
 typedef struct			s_spawning
 {
@@ -85,6 +85,8 @@ typedef struct			s_sdl
 	int					playground_y;
 	int					playground_offset_x;
 	int					playground_offset_y;
+	int					window_w;
+	int					window_h;
 	int					tetro_x;
 	int					tetro_y;
 	int					tetro_size;
@@ -105,6 +107,7 @@ typedef struct			s_sdl
 
 //	MAIN_C
 
+void			setup_window_background(t_sdl *sdl);
 void			clean_tetris_struct(t_tetris *tetris);
 void			failure_exit_program(char *error, t_sdl *sdl);
 
@@ -184,6 +187,10 @@ void			J_tetro_spawn_4(t_tetris *tetris);
 void			S_tetro_spawn_4( t_tetris *tetris);
 void			I_tetro_spawn_4(t_tetris *tetris);
 void			get_current_tetro_4(t_tetris *tetris, int tetro);
+
+// MENU_C
+
+int				launch_game_menu(t_sdl *sdl);
 
 //	GAME_LOOP_C
 

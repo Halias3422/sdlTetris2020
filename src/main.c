@@ -105,7 +105,6 @@ void			load_and_render_playground(t_sdl *sdl)
 					"img/score_background.png")) == NULL)
 		failure_exit_program("Converting score to Texture", sdl);
 	SDL_render_clear(sdl, sdl->renderer);
-	//	SDL_QueryTexture(sdl->playground, NULL, NULL, &dst.w, &dst.h);
 	SDL_render_copy(sdl, sdl->renderer, sdl->playground, NULL, &dst);
 	SDL_RenderPresent(sdl->renderer);
 	SDL_SetRenderTarget(sdl->renderer, NULL);
@@ -186,6 +185,8 @@ void			retreive_window_resolution(t_sdl *sdl)
 		sdl->disp_size = 1.25;
 	else if (display.w == 1920 && display.h == 1080)
 		sdl->disp_size = 1.5;
+	sdl->window_w = display.w;
+	sdl->window_h = display.h;
 	sdl->playground_x = 336 * sdl->disp_size;
 	sdl->playground_y = 656 * sdl->disp_size;
 	sdl->playground_offset_x = (display.w / 2) - (sdl->playground_x / 2);
@@ -231,12 +232,16 @@ int				main(void)
 	SDL_init_img(&sdl);
 	retreive_window_resolution(&sdl);
 	setup_window_background(&sdl);
-	load_and_render_playground(&sdl);
 	load_tetros_img(&sdl);
 	load_tiles_img(&sdl);
 	load_numbers_img(&sdl);
 	init_tetris_struct(&tetris);
-	game_loop(&sdl, &tetris);
+
+	if (launch_game_menu(&sdl) != 2)
+	{
+		load_and_render_playground(&sdl);
+		game_loop(&sdl, &tetris);
+	}
 
 	clean_tetris_struct(&tetris);
 	clean_sdl_struct(&sdl);
