@@ -9,7 +9,7 @@ void			init_sdl_struct(t_sdl *sdl)
 	sdl->stored_tetro = NULL;
 	sdl->tetros = NULL;
 	sdl->tiles = NULL;
-	sdl->disp_size = 0.5;
+	sdl->disp_size = 1;
 	sdl->playground_x = 672;
 	sdl->playground_y = 1312;
 	sdl->playground_offset_x = 0;
@@ -99,7 +99,7 @@ void			load_and_render_playground(t_sdl *sdl)
 					"img/next_background.png")) == NULL)
 		failure_exit_program("Converting Next Tetro Background to Texture", sdl);
 	if ((sdl->playground = IMG_LoadTexture(sdl->renderer,
-					"img/big_playground.png")) == NULL)
+					"img/playground.png")) == NULL)
 		failure_exit_program("Converting playground to Texture", sdl);
 	if ((sdl->score_window = IMG_LoadTexture(sdl->renderer,
 					"img/score_background.png")) == NULL)
@@ -183,16 +183,16 @@ void			retreive_window_resolution(t_sdl *sdl)
 	if (SDL_GetDesktopDisplayMode(0, &display) != 0)
 		failure_exit_program("Getting Display Mode", sdl);
 	if (display.w == 1600 && display.h == 900)
-		sdl->disp_size = 0.5;
+		sdl->disp_size = 1.25;
 	else if (display.w == 1920 && display.h == 1080)
-		sdl->disp_size = 0.75;
-	sdl->playground_x = 672 * sdl->disp_size;
-	sdl->playground_y = 1312 * sdl->disp_size;
+		sdl->disp_size = 1.5;
+	sdl->playground_x = 336 * sdl->disp_size;
+	sdl->playground_y = 656 * sdl->disp_size;
 	sdl->playground_offset_x = (display.w / 2) - (sdl->playground_x / 2);
 	sdl->playground_offset_y = (display.h / 2) - (sdl->playground_y / 2);
-	sdl->tetro_x = sdl->playground_offset_x + (16 * sdl->disp_size);
-	sdl->tetro_y = sdl->playground_offset_y + (16 * sdl->disp_size);
-	sdl->tetro_size = 65 * sdl->disp_size;
+	sdl->tetro_x = sdl->playground_offset_x + (8 * sdl->disp_size);
+	sdl->tetro_y = sdl->playground_offset_y + (8 * sdl->disp_size);
+	sdl->tetro_size = 32 * sdl->disp_size;
 }
 
 void			load_numbers_img(t_sdl *sdl)

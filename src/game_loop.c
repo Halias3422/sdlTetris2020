@@ -159,7 +159,7 @@ void			render_all_grounded_tetros(t_sdl *sdl, t_tetris *tetris)
 				SDL_render_copy(sdl, sdl->renderer, sdl->tiles->yellow, NULL, &dst);
 			else if (tetris->board[i][j] == 'W')
 				SDL_render_copy(sdl, sdl->renderer, sdl->tiles->white, NULL, &dst);
-			dst.x += 64 * sdl->disp_size;
+			dst.x += 32 * sdl->disp_size;
 			j++;
 		}
 		dst.y += sdl->tetro_size;
@@ -190,10 +190,10 @@ void			clean_stored_struct(t_tetris *stored)
 
 void			print_stored_tetro_window(t_sdl *sdl, t_tetris *tetris)
 {
-	SDL_Rect	dst = {sdl->playground_offset_x - 32 - (320 * sdl->disp_size),
+	SDL_Rect	dst = {sdl->playground_offset_x - 32 - (160 * sdl->disp_size),
 					   sdl->playground_offset_y * 2,
-					   320 * sdl->disp_size,
-					   368 * sdl->disp_size};
+					   160 * sdl->disp_size,
+					   184 * sdl->disp_size};
 	SDL_Rect	tetro_dst = {0, 0, 0, 0};
 
 	SDL_render_copy(sdl, sdl->renderer, sdl->stored_tetro, NULL, &dst);
@@ -203,13 +203,13 @@ void			print_stored_tetro_window(t_sdl *sdl, t_tetris *tetris)
 	sdl->stored->tetro_type = tetris->stored_tetro_type;
 	sdl->stored->rotation = 1;
 	get_current_tetro(sdl->stored, sdl->stored->tetro_type);
-	tetro_dst.x = (sdl->playground_offset_x - 32 - (320 * sdl->disp_size)) +
-		(32 *sdl->disp_size) +  (((256 * sdl->disp_size) -
-		(sdl->stored->curr_len_x * (64 * sdl->disp_size))) / 2);
-	tetro_dst.y = (sdl->playground_offset_y * 2) + (80 * sdl->disp_size) +
-		(((256 * sdl->disp_size) - (sdl->stored->curr_len_y * (64 * sdl->disp_size))) / 2);
-	tetro_dst.h = (64 * sdl->disp_size) * sdl->stored->curr_len_y;
-	tetro_dst.w = (64 * sdl->disp_size) * sdl->stored->curr_len_x;
+	tetro_dst.x = (sdl->playground_offset_x - 32 - (160 * sdl->disp_size)) +
+		(16 *sdl->disp_size) +  (((128 * sdl->disp_size) -
+		(sdl->stored->curr_len_x * (32 * sdl->disp_size))) / 2);
+	tetro_dst.y = (sdl->playground_offset_y * 2) + (40 * sdl->disp_size) +
+		(((128 * sdl->disp_size) - (sdl->stored->curr_len_y * (32 * sdl->disp_size))) / 2);
+	tetro_dst.h = (32 * sdl->disp_size) * sdl->stored->curr_len_y;
+	tetro_dst.w = (32 * sdl->disp_size) * sdl->stored->curr_len_x;
 	SDL_render_copy(sdl, sdl->renderer, get_current_tetro_texture(sdl, sdl->stored),
 			NULL, &tetro_dst);
 	clean_stored_struct(sdl->stored);
@@ -217,22 +217,22 @@ void			print_stored_tetro_window(t_sdl *sdl, t_tetris *tetris)
 
 void			print_score_window(t_sdl *sdl, t_tetris *tetris)
 {
-	SDL_Rect	dst = {sdl->playground_offset_x - 32 - (320 * sdl->disp_size),
-					   ((sdl->playground_offset_y * 2 + 368 * sdl->disp_size) +
-						((sdl->playground_y - (sdl->playground_offset_y + 368 *
-						 sdl->disp_size) - 432 * sdl->disp_size) / 2)),
-					   320 * sdl->disp_size,
-					   432 * sdl->disp_size};
-	SDL_Rect	level_dst = {sdl->playground_offset_x - 32 - (320 * sdl->disp_size) + ( 32 *sdl->disp_size) + (32 * sdl->disp_size * 7),
-							 ((sdl->playground_offset_y * 2 + 368 * sdl->disp_size) + ((sdl->playground_y - (sdl->playground_offset_y + 368 *sdl->disp_size) - 432 * sdl->disp_size) / 2)) + (86 *sdl->disp_size),
-							 30 * sdl->disp_size,
-							 54 * sdl->disp_size};
-	SDL_Rect	score_dst = {sdl->playground_offset_x - 32 - (320 * sdl->disp_size) + (32 * sdl->disp_size) + (32 * sdl->disp_size * 7),
-					   ((sdl->playground_offset_y * 2 + 368 * sdl->disp_size) +
-						((sdl->playground_y - (sdl->playground_offset_y + 368 *
-						 sdl->disp_size) - 432 * sdl->disp_size) / 2)) + (214 *sdl->disp_size),
-					   30 * sdl->disp_size,
-					   54 * sdl->disp_size};
+	SDL_Rect	dst = {sdl->playground_offset_x - 32 - (160 * sdl->disp_size),
+					   ((sdl->playground_offset_y * 2 + 184 * sdl->disp_size) +
+						((sdl->playground_y - (sdl->playground_offset_y + 184 *
+						 sdl->disp_size) - 216 * sdl->disp_size) / 2)),
+					   160 * sdl->disp_size,
+					   216 * sdl->disp_size};
+	SDL_Rect	level_dst = {sdl->playground_offset_x - 32 - (160 * sdl->disp_size) + ( 16 *sdl->disp_size) + (16 * sdl->disp_size * 7),
+							 ((sdl->playground_offset_y * 2 + 184 * sdl->disp_size) + ((sdl->playground_y - (sdl->playground_offset_y + 184 *sdl->disp_size) - 216 * sdl->disp_size) / 2)) + (43 *sdl->disp_size),
+							 15 * sdl->disp_size,
+							 27 * sdl->disp_size};
+	SDL_Rect	score_dst = {sdl->playground_offset_x - 32 - (160 * sdl->disp_size) + (16 * sdl->disp_size) + (16 * sdl->disp_size * 7),
+					   ((sdl->playground_offset_y * 2 + 184 * sdl->disp_size) +
+						((sdl->playground_y - (sdl->playground_offset_y + 184 *
+						 sdl->disp_size) - 216 * sdl->disp_size) / 2)) + (107 *sdl->disp_size),
+					   15 * sdl->disp_size,
+					   27 * sdl->disp_size};
 	int			score = tetris->score;
 	int			level = tetris->level;
 
@@ -241,7 +241,7 @@ void			print_score_window(t_sdl *sdl, t_tetris *tetris)
 	{
 		SDL_render_copy(sdl, sdl->renderer, sdl->numbers[level % 10], NULL, &level_dst);
 		level = level / 10;
-		level_dst.x -= 32 * sdl->disp_size;
+		level_dst.x -= 16 * sdl->disp_size;
 		if (level == 0)
 			break ;
 	}
@@ -249,7 +249,7 @@ void			print_score_window(t_sdl *sdl, t_tetris *tetris)
 	{
 		SDL_render_copy(sdl, sdl->renderer, sdl->numbers[score % 10], NULL, &score_dst);
 		score = score / 10;
-		score_dst.x -= 32 * sdl->disp_size;
+		score_dst.x -= 16 * sdl->disp_size;
 		if (score == 0)
 			break ;
 	}
@@ -261,8 +261,8 @@ void			print_next_tetros_window(t_sdl *sdl, t_tetris *tetris)
 	int			tetro_offset = 0;
 	SDL_Rect	dst = {sdl->playground_offset_x + 32 + sdl->playground_x,
 					   sdl->playground_offset_y * 2,
-					   320 * sdl->disp_size,
-					   912 * sdl->disp_size};
+					   160 * sdl->disp_size,
+					   456 * sdl->disp_size};
 	SDL_Rect	tetro_dst = {0, 0, 0, 0};
 
 	SDL_render_copy(sdl, sdl->renderer, sdl->next_tetro, NULL, &dst);
@@ -272,10 +272,10 @@ void			print_next_tetros_window(t_sdl *sdl, t_tetris *tetris)
 		sdl->next_t->tetro_type = tmp->tetro_type;
 		sdl->next_t->rotation = 1;
 		get_current_tetro(sdl->next_t, sdl->next_t->tetro_type);
-		tetro_dst.x = (sdl->playground_offset_x + 32 + sdl->playground_x) + (32 * sdl->disp_size) + (((256 * sdl->disp_size) - (sdl->next_t->curr_len_x * (64 * sdl->disp_size))) / 2);
-		tetro_dst.y = (sdl->playground_offset_y * 2) + (tetro_offset * (272 * sdl->disp_size)) + (80 * sdl->disp_size) + (((256 * sdl->disp_size) - (sdl->next_t->curr_len_y * (64 * sdl->disp_size))) / 2);
-		tetro_dst.h = (64 * sdl->disp_size) * sdl->next_t->curr_len_y;
-		tetro_dst.w = (64 * sdl->disp_size) * sdl->next_t->curr_len_x;
+		tetro_dst.x = (sdl->playground_offset_x + 32 + sdl->playground_x) + (16 * sdl->disp_size) + (((128 * sdl->disp_size) - (sdl->next_t->curr_len_x * (32 * sdl->disp_size))) / 2);
+		tetro_dst.y = (sdl->playground_offset_y * 2) + (tetro_offset * (136 * sdl->disp_size)) + (40 * sdl->disp_size) + (((128 * sdl->disp_size) - (sdl->next_t->curr_len_y * (32 * sdl->disp_size))) / 2);
+		tetro_dst.h = (32 * sdl->disp_size) * sdl->next_t->curr_len_y;
+		tetro_dst.w = (32 * sdl->disp_size) * sdl->next_t->curr_len_x;
 		SDL_render_copy(sdl, sdl->renderer, get_current_tetro_texture(sdl, sdl->next_t),
 				NULL, &tetro_dst);
 		 tetro_offset += 1;
@@ -291,12 +291,12 @@ void			render_ghost_tetro(t_sdl *sdl, t_tetris *tetris)
 	int			real_act_y = tetris->act_y;
 	SDL_Rect	dst = {sdl->tetro_x + ((tetris->act_x + 1) * (sdl->tetro_size)) - sdl->tetro_size,
 					   sdl->tetro_y + (((tetris->act_y - 4) + 1) * (sdl->tetro_size)) - sdl->tetro_size,
-					   (tetris->curr_len_x * 65) * sdl->disp_size,
-					   (tetris->curr_len_y * 65) * sdl->disp_size};
+					   (tetris->curr_len_x * 32) * sdl->disp_size,
+					   (tetris->curr_len_y * 32) * sdl->disp_size};
 	SDL_Rect	src = {0,
 					   0,
-					   (tetris->curr_len_x * 65),
-					   (tetris->curr_len_y * 65)};
+					   (tetris->curr_len_x * 32),
+					   (tetris->curr_len_y * 32)};
 	int			tmp_curr_len_y = tetris->curr_len_y;
 
 	ghost = get_current_tetro_texture(sdl, tetris);
@@ -310,9 +310,9 @@ void			render_ghost_tetro(t_sdl *sdl, t_tetris *tetris)
 		tmp_curr_len_y = tetris->act_y;
 		while (tmp_curr_len_y++ < 4)
 		{
-			src.y += 65;
-			dst.y += 65 * sdl->disp_size;
-			dst.h -= 65 * sdl->disp_size;
+			src.y += 32;
+			dst.y += 32 * sdl->disp_size;
+			dst.h -= 32 * sdl->disp_size;
 		}
 	}
 	SDL_render_copy(sdl, sdl->renderer, ghost, NULL, &dst);
@@ -329,8 +329,8 @@ void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 								  sdl->playground_y};
 	SDL_Rect	dst = {sdl->tetro_x + ((tetris->act_x + 1) * (sdl->tetro_size)) - sdl->tetro_size,
 					   sdl->tetro_y + (((tetris->act_y - 4) + 1) * (sdl->tetro_size)) - sdl->tetro_size,
-					   (tetris->curr_len_x * 65) * sdl->disp_size,
-					   (tetris->curr_len_y * 65) * sdl->disp_size};
+					   (tetris->curr_len_x * 32) * sdl->disp_size,
+					   (tetris->curr_len_y * 32) * sdl->disp_size};
 	SDL_Rect	src = {0,
 					   0,
 					   (tetris->curr_len_x * 65),
@@ -343,8 +343,8 @@ void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 		while (tmp_curr_len_y++ < 4)
 		{
 			src.y += 65;
-			dst.y += 65 * sdl->disp_size;
-			dst.h -= 65 * sdl->disp_size;
+			dst.y += 32 * sdl->disp_size;
+			dst.h -= 32 * sdl->disp_size;
 		}
 	}
 	SDL_render_clear(sdl, sdl->renderer);
@@ -504,7 +504,7 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		tetris->prev_y = tetris->act_y;
 		if (state[SDL_SCANCODE_ESCAPE])
 			return ;
-		if (current_time > last_moved + 40 && scan_keyboard_state(state, tetris) > 0)
+		if (current_time > last_moved + 70 && scan_keyboard_state(state, tetris) > 0)
 			last_moved = SDL_GetTicks();
 		if (current_time > last_turn + tetris->turn_speed)
 		{
@@ -531,6 +531,7 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 			tetris->spawned = 0;
 			tetris->has_stored = 0;
 			tetris->lost = register_landed_tetro_in_board(tetris);
+			printf("tetris->speed = %d\n", tetris->turn_speed);
 			check_for_full_lines(sdl, tetris);
 			last_stand = 0;
 		}

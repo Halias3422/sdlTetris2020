@@ -56,7 +56,7 @@ void			check_for_full_lines(t_sdl *sdl, t_tetris *tetris)
 		{
 			tetris->level += 1;
 			tetris->level_cap *= 1.5;
-			tetris->turn_speed -= 15;
+			tetris->turn_speed -= 25;
 		}
 	}
 }
