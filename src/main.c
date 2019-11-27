@@ -239,6 +239,7 @@ int				main(void)
 
 	if (launch_game_menu(&sdl) != 2)
 	{
+		setup_window_background(&sdl);
 		load_and_render_playground(&sdl);
 		game_loop(&sdl, &tetris);
 	}

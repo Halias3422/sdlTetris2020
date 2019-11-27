@@ -348,7 +348,6 @@ void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 		}
 	}
 	SDL_render_clear(sdl, sdl->renderer);
-	setup_window_background(sdl);
 	SDL_render_copy(sdl, sdl->renderer, sdl->playground, NULL, &playground_dst);
 	if (tetris->spawned == 1)
 		SDL_render_copy(sdl, sdl->renderer, get_current_tetro_texture(sdl, tetris),
@@ -426,12 +425,10 @@ Uint32			scan_exit_and_time(const Uint8 *state, Uint32 currently_pressed)
 	return (currently_pressed);
 }
 
-int				register_landed_tetro_in_board(t_tetris *tetris)
+void			register_landed_tetro_in_board(t_tetris *tetris)
 {
 	char		a = 65 + tetris->tetro_type;
 
-	if (tetris->act_y < 4)
-		return (1);
 	for (int i = tetris->act_y; i < tetris->act_y + tetris->curr_len_y; i++)
 	{
 		for (int j = tetris->act_x; j < tetris->act_x + tetris->curr_len_x; j++)
@@ -442,7 +439,7 @@ int				register_landed_tetro_in_board(t_tetris *tetris)
 			}
 		}
 	}
-	return (0);
+	return ;
 }
 
 void			clear_old_tetro_location_on_board(t_tetris *tetris)
@@ -484,6 +481,19 @@ void			update_board_with_new_location(t_tetris *tetris)
 				tetris->board[y][x] = '1';
 		}
 	}
+}
+
+int				check_if_game_over(t_tetris *tetris)
+{
+	for (int y = 0;y < 4; y++)
+	{
+		for (int x = 0; x < 10; x++)
+		{
+			if (tetris->board[y][x] != '0' && tetris->board[y][x] != '1')
+				return (1);
+		}
+	}
+	return (0);
 }
 
 void			game_loop(t_sdl *sdl, t_tetris *tetris)
@@ -528,12 +538,13 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		update_board_with_new_location(tetris);
 		if (last_stand == 2)
 		{
-			//NEED TO REORDER TO NOT LOOSE IF CLEARED LINE
 			tetris->spawned = 0;
 			tetris->has_stored = 0;
-			tetris->lost = register_landed_tetro_in_board(tetris);
-			printf("tetris->speed = %d\n", tetris->turn_speed);
+			register_landed_tetro_in_board(tetris);
 			check_for_full_lines(sdl, tetris);
+			tetris->lost = check_if_game_over(tetris);
+			print_tetris_board(tetris);
+			printf("lost = %d\n", tetris->lost);
 			last_stand = 0;
 		}
 		SDL_Delay(1);

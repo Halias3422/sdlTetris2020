@@ -32,6 +32,7 @@ int				game_menu_loop(t_sdl *sdl, SDL_Texture *menu, SDL_Rect dst)
 	int			getting_out = -1;
 	SDL_Event	event;
 	int			selected = 0;
+	int			prev_selected = -1;
 
 	while (getting_out == -1)
 	{
@@ -50,7 +51,11 @@ int				game_menu_loop(t_sdl *sdl, SDL_Texture *menu, SDL_Rect dst)
 				else if (selected == 3)
 					selected = 0;
 		}
-		display_game_menu(sdl, dst, menu, selected);
+		if (prev_selected != selected)
+		{
+			prev_selected = selected;
+			display_game_menu(sdl, dst, menu, selected);
+		}
 		SDL_Delay(5);
 	}
 	return (selected);
