@@ -5,7 +5,7 @@ OBJ_PATH = ./obj/
 INC_PATH = ./includes/
 
 SOURCES= main.c load_tetros.c load_tiles.c spawn_tetros_1.c spawn_tetros_2.c spawn_tetros_3.c spawn_tetros_4.c sdl_functions.c \
-		 game_loop.c move_tetro.c rotation_tetro.c clear_lines.c menu.c debug.c
+		 game_loop.c move_tetro.c rotation_tetro.c clear_lines.c menu.c debug.c pause_menu.c
 INCLUDES= tetris.h
 OBJ_NAME = $(SOURCES:.c=.o)
 

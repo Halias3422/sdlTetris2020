@@ -94,6 +94,10 @@ typedef struct			s_sdl
 	SDL_Renderer		*renderer;
 	SDL_Event			event;
 	SDL_Surface			*img_load;
+	SDL_Texture			*menu;
+	SDL_Texture			*pause_menu_play;
+	SDL_Texture			*pause_menu_options;
+	SDL_Texture			*pause_menu_exit;
 	SDL_Texture			*playground;
 	SDL_Texture			*stored_tetro;
 	SDL_Texture			*next_tetro;
@@ -202,6 +206,10 @@ int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris);
 void			spawn_new_tetro(t_tetris *tetris);
 void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris);
 void			game_loop(t_sdl *sdl, t_tetris *tetris);
+
+//	PAUSE_MENU_C
+
+int				pause_menu(t_sdl *sdl, t_tetris *tetris);
 
 //	MOVE_TETRO_C
 

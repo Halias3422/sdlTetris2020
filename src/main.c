@@ -221,6 +221,22 @@ void			load_numbers_img(t_sdl *sdl)
 				"img/numbers/nine.png");
 }
 
+void			load_menus_img(t_sdl *sdl)
+{
+	if ((sdl->menu = SDL_load_texture(sdl, sdl->renderer, sdl->menu, "img/menu.png"))
+			== NULL)
+		failure_exit_program("Loading Menu Texture", sdl);
+	if ((sdl->pause_menu_play = SDL_load_texture(sdl, sdl->renderer, sdl->pause_menu_play,
+					"img/pause_menu_play.png")) == NULL)
+		failure_exit_program("Loading Pause Play Texture", sdl);
+	if ((sdl->pause_menu_options = SDL_load_texture(sdl, sdl->renderer, sdl->pause_menu_options,
+					"img/pause_menu_options.png")) == NULL)
+		failure_exit_program("Loading Pause Options Texture", sdl);
+	if ((sdl->pause_menu_exit = SDL_load_texture(sdl, sdl->renderer, sdl->pause_menu_exit,
+					"img/pause_menu_exit.png")) == NULL)
+		failure_exit_program("Loading Pause Exit Texture", sdl);
+}
+
 int				main(void)
 {
 	t_sdl		sdl;
@@ -229,15 +245,17 @@ int				main(void)
 	init_sdl_struct(&sdl);
 	SDL_init_window(&sdl);
 	SDL_init_renderer(&sdl);
+	SDL_SetRenderDrawBlendMode(sdl.renderer, SDL_BLENDMODE_BLEND);
 	SDL_init_img(&sdl);
 	retreive_window_resolution(&sdl);
 	setup_window_background(&sdl);
 	load_tetros_img(&sdl);
 	load_tiles_img(&sdl);
 	load_numbers_img(&sdl);
+	load_menus_img(&sdl);
 	init_tetris_struct(&tetris);
 
-	if (launch_game_menu(&sdl) != 2)
+	while (launch_game_menu(&sdl) != 2)
 	{
 		setup_window_background(&sdl);
 		load_and_render_playground(&sdl);

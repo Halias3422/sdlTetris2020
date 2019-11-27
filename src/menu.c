@@ -63,16 +63,12 @@ int				game_menu_loop(t_sdl *sdl, SDL_Texture *menu, SDL_Rect dst)
 
 int				launch_game_menu(t_sdl *sdl)
 {
-	SDL_Texture	*menu = NULL;
 	SDL_Rect	dst;
 
-	if ((menu = SDL_load_texture(sdl, sdl->renderer, menu, "img/menu.png"))
-			== NULL)
-		failure_exit_program("Loading Menu Texture", sdl);
-	SDL_QueryTexture(menu, NULL, NULL, &dst.w, &dst.h);
+	SDL_QueryTexture(sdl->menu, NULL, NULL, &dst.w, &dst.h);
 	dst.w *= (sdl->disp_size * 2);
 	dst.h *= (sdl->disp_size * 2);
 	dst.x = sdl->window_w / 2 - dst.w / 2;
 	dst.y = sdl->window_h / 2 - dst.h / 2;
-	return (game_menu_loop(sdl, menu, dst));
+	return (game_menu_loop(sdl, sdl->menu, dst));
 }

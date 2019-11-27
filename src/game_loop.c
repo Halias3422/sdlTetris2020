@@ -415,16 +415,6 @@ int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris)
 	return (check);
 }
 
-Uint32			scan_exit_and_time(const Uint8 *state, Uint32 currently_pressed)
-{
-	if (state[SDL_SCANCODE_ESCAPE])
-		return (-1);
-	if (state[SDL_SCANCODE_LEFT] || state[SDL_SCANCODE_RIGHT] ||
-			state[SDL_SCANCODE_DOWN])
-		return (SDL_GetTicks());
-	return (currently_pressed);
-}
-
 void			register_landed_tetro_in_board(t_tetris *tetris)
 {
 	char		a = 65 + tetris->tetro_type;
@@ -514,7 +504,10 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		tetris->prev_x = tetris->act_x;
 		tetris->prev_y = tetris->act_y;
 		if (state[SDL_SCANCODE_ESCAPE])
-			return ;
+		{
+			if (pause_menu(sdl, tetris) == 2)
+				return ;
+		}
 		if (current_time > last_moved + 70 && scan_keyboard_state(state, tetris) > 0)
 			last_moved = SDL_GetTicks();
 		if (current_time > last_turn + tetris->turn_speed)
@@ -543,8 +536,6 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 			register_landed_tetro_in_board(tetris);
 			check_for_full_lines(sdl, tetris);
 			tetris->lost = check_if_game_over(tetris);
-			print_tetris_board(tetris);
-			printf("lost = %d\n", tetris->lost);
 			last_stand = 0;
 		}
 		SDL_Delay(1);
