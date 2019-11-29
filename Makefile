@@ -13,13 +13,13 @@ INC = $(addprefix $(INC_PATH), $(INCLUDES))
 SRC = $(addprefix $(SRC_PATH), $(SOURCES))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 
-FLAG += -g -Wall -Wextra #-fsanitize=address
+FLAG += -g -Wall -Wextra -fsanitize=address
 
 all:
 	make $(NAME)
 
 $(NAME): $(OBJ) Makefile
-	gcc $(FLAG) -o ${NAME} $(OBJ) -I . -lSDL2 -Wl,-rpath=/usr/local/lib -lSDL2_image
+	gcc $(FLAG) -o ${NAME} $(OBJ) -I . -lSDL2 -Wl,-rpath=/usr/local/lib -lSDL2_image -lSDL2_mixer
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c $(INC)
 	if test ! -d $(dir $@); then mkdir -p $(dir $@); fi

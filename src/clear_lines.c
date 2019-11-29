@@ -50,6 +50,7 @@ void			check_for_full_lines(t_sdl *sdl, t_tetris *tetris)
 	}
 	if (nb_cleared > -1)
 	{
+		Mix_PlayChannel(-1, sdl->line, 0);
 		display_cleared_lines(sdl, tetris, cleared_lines, nb_cleared);
 		tetris->score += 100 + ((200 * nb_cleared) * (0.5 * nb_cleared));
 		while (tetris->score > tetris->level_cap)

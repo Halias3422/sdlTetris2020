@@ -7,6 +7,7 @@
 #include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 # define DARK_BLUE {0, 0, 0, 255}
 
@@ -103,6 +104,14 @@ typedef struct			s_sdl
 	SDL_Texture			*next_tetro;
 	SDL_Texture			*score_window;
 	SDL_Texture			**numbers;
+	Mix_Music			*main_theme;
+	Mix_Chunk			*moving;
+	Mix_Chunk			*line;
+	Mix_Chunk			*lost;
+	Mix_Chunk			*pause;
+	Mix_Chunk			*landing;
+	Mix_Chunk			*selecting;
+	Mix_Chunk			*menu_move;
 	struct s_tetros		*tetros;
 	struct s_tiles		*tiles;
 	struct s_tetris		*stored;
@@ -115,8 +124,13 @@ void			setup_window_background(t_sdl *sdl);
 void			clean_tetris_struct(t_tetris *tetris);
 void			failure_exit_program(char *error, t_sdl *sdl);
 
+//	OPTION_MENU_C
+
+void			launch_option_menu(t_sdl *sdl);
+
 //	SDL_FUNCTIONS_C
 
+void			SDL_init_audio(t_sdl *sdl);
 SDL_Texture		*SDL_load_texture(t_sdl *sdl, SDL_Renderer *renderer,
 				SDL_Texture *texture, char *path);
 void			SDL_render_target(t_sdl *sdl, SDL_Renderer *renderer,
@@ -196,13 +210,17 @@ void			get_current_tetro_4(t_tetris *tetris, int tetro);
 
 int				launch_game_menu(t_sdl *sdl);
 
+// OPTION_MENU_C
+
+
+
 //	GAME_LOOP_C
 
 int				check_if_tetro_is_grounded(t_tetris *tetris);
 void			clear_old_tetro_location_on_board(t_tetris *tetris);
 int				update_tetris_board_state(t_tetris *tetris, const Uint8 *state);
 Uint32			scan_exit_and_time(const Uint8 *state, Uint32 currently_pressed);
-int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris);
+int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris, t_sdl *sdl);
 void			spawn_new_tetro(t_tetris *tetris);
 void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris);
 void			game_loop(t_sdl *sdl, t_tetris *tetris);
@@ -222,9 +240,9 @@ int				check_if_tetro_can_move_down(t_tetris *tetris);
 //	ROTATION_TETRO_C
 
 void			abort_new_rotation(t_tetris *tetris, int prev_rotation);
-int				check_if_rotation_is_doable(t_tetris *tetris);
-int				rotate_tetro_left(t_tetris *tetris);
-int				rotate_tetro_right(t_tetris *tetris);
+int				check_if_rotation_is_doable(t_tetris *tetris, t_sdl *sdl);
+int				rotate_tetro_left(t_tetris *tetris, t_sdl *sdl);
+int				rotate_tetro_right(t_tetris *tetris, t_sdl *sdl);
 
 //	CLEAR_LINES_C
 

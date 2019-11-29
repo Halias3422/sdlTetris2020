@@ -73,6 +73,7 @@ int				pause_menu(t_sdl *sdl, t_tetris *tetris)
 					selected = 2;
 				else if (selected == 3)
 					selected = 0;
+				Mix_PlayChannel(-1, sdl->menu_move, 0);
 		}
 		if (prev_selected != selected)
 		{
@@ -81,5 +82,6 @@ int				pause_menu(t_sdl *sdl, t_tetris *tetris)
 		}
 		SDL_Delay(5);
 	}
+	Mix_PlayChannel(-1, sdl->selecting, 0);
 	return (selected);
 }

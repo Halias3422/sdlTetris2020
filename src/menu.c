@@ -50,6 +50,7 @@ int				game_menu_loop(t_sdl *sdl, SDL_Texture *menu, SDL_Rect dst)
 					selected = 2;
 				else if (selected == 3)
 					selected = 0;
+				Mix_PlayChannel(-1, sdl->menu_move, 0);
 		}
 		if (prev_selected != selected)
 		{
@@ -58,6 +59,7 @@ int				game_menu_loop(t_sdl *sdl, SDL_Texture *menu, SDL_Rect dst)
 		}
 		SDL_Delay(5);
 	}
+	Mix_PlayChannel(-1, sdl->selecting, 0);
 	return (selected);
 }
 

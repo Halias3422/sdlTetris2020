@@ -361,7 +361,7 @@ void			print_tetro_on_screen(t_sdl *sdl, t_tetris *tetris)
 	SDL_RenderPresent(sdl->renderer);
 }
 
-int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris)
+int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris, t_sdl *sdl)
 {
 	SDL_Event	event;
 	int			check = 0;
@@ -386,9 +386,9 @@ int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris)
 	if (SDL_PollEvent(&event) && event.type == SDL_KEYDOWN)
 	{
 		if (event.key.keysym.sym == SDLK_q && tetris->tetro_type != 4)
-			check = rotate_tetro_left(tetris);
+			check = rotate_tetro_left(tetris, sdl);
 		else if (event.key.keysym.sym == SDLK_e && tetris->tetro_type != 4)
-			check = rotate_tetro_right(tetris);
+			check = rotate_tetro_right(tetris, sdl);
 		else if (event.key.keysym.sym == SDLK_SPACE)
 		{
 			while (check_if_tetro_is_grounded(tetris) != 1)
@@ -403,6 +403,7 @@ int				scan_keyboard_state(const Uint8 *state, t_tetris *tetris)
 			}
 			else
 				tetris->retreive_stored_tetro = 1;
+			Mix_PlayChannel(-1, sdl->moving, 0);
 			tetris->spawned = 0;
 			tetris->has_stored = 1;
 		}
@@ -505,10 +506,17 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		tetris->prev_y = tetris->act_y;
 		if (state[SDL_SCANCODE_ESCAPE])
 		{
+			Mix_PauseMusic();
+			Mix_PlayChannel(-1, sdl->pause, 0);
 			if (pause_menu(sdl, tetris) == 2)
+			{
+				clean_tetris_struct(tetris);
 				return ;
+			}
+			Mix_PlayChannel(-1, sdl->pause, 0);
+			Mix_ResumeMusic();
 		}
-		if (current_time > last_moved + 70 && scan_keyboard_state(state, tetris) > 0)
+		if (current_time > last_moved + 70 && scan_keyboard_state(state, tetris, sdl) > 0)
 			last_moved = SDL_GetTicks();
 		if (current_time > last_turn + tetris->turn_speed)
 		{
@@ -531,6 +539,7 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		update_board_with_new_location(tetris);
 		if (last_stand == 2)
 		{
+			Mix_PlayChannel(-1, sdl->landing, 0);
 			tetris->spawned = 0;
 			tetris->has_stored = 0;
 			register_landed_tetro_in_board(tetris);
@@ -540,6 +549,7 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		}
 		SDL_Delay(1);
 	}
-	printf("YOU LOST YOU FUCKING LOOOOOOOOOOSER\n");
+	Mix_HaltMusic();
+	Mix_PlayChannel(-1, sdl->lost, 0);
 	SDL_Delay(500);
 }

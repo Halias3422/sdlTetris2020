@@ -53,6 +53,14 @@ void			clean_sdl_struct(t_sdl *sdl)
 	SDL_DestroyTexture(sdl->tiles->blue);
 	SDL_DestroyTexture(sdl->tiles->white);
 	SDL_DestroyTexture(sdl->stored_tetro);
+	Mix_FreeMusic(sdl->main_theme);
+	Mix_FreeChunk(sdl->moving);
+	Mix_FreeChunk(sdl->line);
+	Mix_FreeChunk(sdl->lost);
+	Mix_FreeChunk(sdl->pause);
+	Mix_FreeChunk(sdl->landing);
+	Mix_FreeChunk(sdl->selecting);
+	Mix_FreeChunk(sdl->menu_move);
 	SDL_DestroyTexture(sdl->next_tetro);
 	for (int i = 0; i < 10; i++)
 		SDL_DestroyTexture(sdl->numbers[i]);
@@ -61,6 +69,7 @@ void			clean_sdl_struct(t_sdl *sdl)
 		free(sdl->tetros);
 	if (sdl->tiles)
 		free(sdl->tiles);
+	Mix_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }
@@ -91,7 +100,6 @@ void			load_and_render_playground(t_sdl *sdl)
 					   sdl->playground_y};
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-	SDL_render_target(sdl, sdl->renderer, sdl->playground);
 	if ((sdl->stored_tetro = IMG_LoadTexture(sdl->renderer,
 					"img/stored_background.png")) == NULL)
 		failure_exit_program("Converting Stored Background to Texture", sdl);
@@ -114,12 +122,18 @@ void			clean_tetris_struct(t_tetris *tetris)
 {
 	t_spawning	*tmp;
 
-	for (int i = 0; i < 24; i++)
-	free(tetris->board[i]);
-	free(tetris->board);
-	for (int i = 0; i < tetris->curr_len_y; i++)
-		free(tetris->curr_tetro[i]);
-	free(tetris->curr_tetro);
+	if (tetris->board)
+	{
+		for (int i = 0; i < 24; i++)
+			free(tetris->board[i]);
+		free(tetris->board);
+	}
+	if (tetris->curr_tetro)
+	{
+		for (int i = 0; i < tetris->curr_len_y; i++)
+			free(tetris->curr_tetro[i]);
+		free(tetris->curr_tetro);
+	}
 	while (tetris->next_tetro != NULL)
 	{
 		tmp = tetris->next_tetro;
@@ -237,32 +251,61 @@ void			load_menus_img(t_sdl *sdl)
 		failure_exit_program("Loading Pause Exit Texture", sdl);
 }
 
+void			load_sounds(t_sdl *sdl)
+{
+	if ((sdl->main_theme = Mix_LoadMUS("sounds/tetris_main_theme.mp3")) == NULL)
+		printf("Failure Loading Main Theme Music %s\n", Mix_GetError());
+	if ((sdl->moving = Mix_LoadWAV("sounds/sfx_menu_move3.wav")) == NULL)
+		printf("Failure Loading Block Rotate Sound %s\n", Mix_GetError());
+	if ((sdl->line = Mix_LoadWAV("sounds/sfx_sounds_powerup3.wav")) == NULL)
+		printf("Failure Loading Line Remove Sound %s\n", Mix_GetError());
+	if ((sdl->lost = Mix_LoadWAV("sounds/sfx_exp_long2.wav")) == NULL)
+		printf("Failure Loading Game Over Sound %s\n", Mix_GetError());
+	if ((sdl->pause = Mix_LoadWAV("sounds/sfx_sounds_pause3_in.wav")) == NULL)
+		printf("Failure Loading Pause Sound %s\n", Mix_GetError());
+	if ((sdl->landing = Mix_LoadWAV("sounds/sfx_sounds_impact5.wav")) == NULL)
+		printf("Failure Slow Hit Sound %s\n", Mix_GetError());
+	if ((sdl->selecting = Mix_LoadWAV("sounds/sfx_menu_select1.wav")) == NULL)
+		printf("Failure Loading Menu Select Sound %s\n", Mix_GetError());
+	if ((sdl->menu_move = Mix_LoadWAV("sounds/sfx_menu_move3.wav")) == NULL)
+		printf("Failure Loading Menu Move Sound %s\n", Mix_GetError());
+}
+
 int				main(void)
 {
 	t_sdl		sdl;
 	t_tetris	tetris;
+	int			menu_option = -1;
 
 	init_sdl_struct(&sdl);
 	SDL_init_window(&sdl);
 	SDL_init_renderer(&sdl);
+	SDL_init_audio(&sdl);
 	SDL_SetRenderDrawBlendMode(sdl.renderer, SDL_BLENDMODE_BLEND);
 	SDL_init_img(&sdl);
 	retreive_window_resolution(&sdl);
 	setup_window_background(&sdl);
+	load_sounds(&sdl);
 	load_tetros_img(&sdl);
 	load_tiles_img(&sdl);
 	load_numbers_img(&sdl);
 	load_menus_img(&sdl);
-	init_tetris_struct(&tetris);
 
-	while (launch_game_menu(&sdl) != 2)
+	while ((menu_option = launch_game_menu(&sdl)) != 2)
 	{
 		setup_window_background(&sdl);
-		load_and_render_playground(&sdl);
-		game_loop(&sdl, &tetris);
+//		if (menu_option == 1)
+//			launch_option_menu(&sdl);
+//		else
+//		{
+			init_tetris_struct(&tetris);
+			load_and_render_playground(&sdl);
+			Mix_PlayMusic(sdl.main_theme, -1);
+			game_loop(&sdl, &tetris);
+//		}
 	}
 
-	clean_tetris_struct(&tetris);
+//	clean_tetris_struct(&tetris);
 	clean_sdl_struct(&sdl);
 	printf("CLEAN EXIT\n");
 	return (0);

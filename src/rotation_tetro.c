@@ -15,7 +15,7 @@ void			abort_new_rotation(t_tetris *tetris, int prev_rotation)
 	tetris->act_y = tetris->prev_y;
 }
 
-int				check_if_rotation_is_doable(t_tetris *tetris)
+int				check_if_rotation_is_doable(t_tetris *tetris, t_sdl *sdl)
 {
 	for (int i = tetris->act_y; i < tetris->act_y + tetris->curr_len_y; i++)
 	{
@@ -27,10 +27,11 @@ int				check_if_rotation_is_doable(t_tetris *tetris)
 				return (1);
 		}
 	}
+	Mix_PlayChannel(-1, sdl->moving, 0);
 	return (0);
 }
 
-int				rotate_tetro_left(t_tetris *tetris)
+int				rotate_tetro_left(t_tetris *tetris, t_sdl *sdl)
 {
 	int			prev_rotation = tetris->rotation;
 
@@ -50,7 +51,7 @@ int				rotate_tetro_left(t_tetris *tetris)
 		get_current_tetro_3(tetris, tetris->tetro_type);
 	else if (tetris->rotation == 4)
 		get_current_tetro_4(tetris, tetris->tetro_type);
-	if (check_if_rotation_is_doable(tetris) == 1)
+	if (check_if_rotation_is_doable(tetris, sdl) == 1)
 	{
 		abort_new_rotation(tetris, prev_rotation);
 		return (0);
@@ -58,7 +59,7 @@ int				rotate_tetro_left(t_tetris *tetris)
 	return (1);
 }
 
-int				rotate_tetro_right(t_tetris *tetris)
+int				rotate_tetro_right(t_tetris *tetris, t_sdl *sdl)
 {
 	int			prev_rotation = tetris->rotation;
 
@@ -80,7 +81,7 @@ int				rotate_tetro_right(t_tetris *tetris)
 		get_current_tetro_4(tetris, tetris->tetro_type);
 	while (tetris->act_y + tetris->curr_len_y > 24)
 		tetris->act_y -= 1;
-	if (check_if_rotation_is_doable(tetris) == 1)
+	if (check_if_rotation_is_doable(tetris, sdl) == 1)
 	{
 		abort_new_rotation(tetris, prev_rotation);
 		return (0);

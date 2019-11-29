@@ -2,7 +2,7 @@
 
 void			SDL_init_window(t_sdl *sdl)
 {
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) != 0)
 			failure_exit_program("Initialization SDL WINDOW", sdl);
 	if ((sdl->window = SDL_CreateWindow("SUCH AMAZING TETRIS, SUCH WOW",
 				SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1920, 1080,
@@ -27,7 +27,13 @@ void			SDL_apply_color_to_renderer(SDL_Color rgba, t_sdl *sdl)
 void			SDL_init_img(t_sdl *sdl)
 {
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
-		failure_exit_program("Initializing IMAGES", sdl);
+		printf("Failure Initializing IMAGES %s\n", IMG_GetError());
+}
+
+void			SDL_init_audio(t_sdl *sdl)
+{
+	if ((Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0))
+		printf("Failure Initializing Audio %s\n", Mix_GetError());
 }
 
 SDL_Texture		*SDL_load_texture(t_sdl *sdl, SDL_Renderer *renderer,
