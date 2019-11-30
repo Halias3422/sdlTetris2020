@@ -38,6 +38,9 @@ void			spawn_new_tetro(t_tetris *tetris)
 			tetris->next_tetro->tetro_type = rand() % 7;
 		tetris->next_tetro = head;
 	}
+	for (int i = 0; i < tetris->curr_len_y; i++)
+		free(tetris->curr_tetro[i]);
+	free(tetris->curr_tetro);
 	get_current_tetro(tetris, tetris->tetro_type);
 	tetris->act_y = 4 - tetris->curr_len_y;
 	tetris->act_x =rand() % ((9 - tetris->offset_right) + 1 -
@@ -280,8 +283,8 @@ void			print_next_tetros_window(t_sdl *sdl, t_tetris *tetris)
 				NULL, &tetro_dst);
 		 tetro_offset += 1;
 		 tmp = tmp->next;
-	}
 	clean_stored_struct(sdl->next_t);
+	}
 
 }
 
@@ -549,6 +552,7 @@ void			game_loop(t_sdl *sdl, t_tetris *tetris)
 		}
 		SDL_Delay(1);
 	}
+	clean_tetris_struct(tetris);
 	Mix_HaltMusic();
 	Mix_PlayChannel(-1, sdl->lost, 0);
 	SDL_Delay(500);

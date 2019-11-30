@@ -185,7 +185,7 @@ void			init_tetris_struct(t_tetris *tetris)
 	tetris->has_stored = 0;
 	tetris->retreive_stored_tetro = 0;
 	tetris->turn_speed = 500;
-	tetris->next_tetro = (t_spawning*)malloc(sizeof(t_spawning));;
+	tetris->next_tetro = (t_spawning*)malloc(sizeof(t_spawning));
 	fill_tetris_list_next_tetro(tetris->next_tetro);
 }
 
