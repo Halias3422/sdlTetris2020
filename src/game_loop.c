@@ -38,9 +38,12 @@ void			spawn_new_tetro(t_tetris *tetris)
 			tetris->next_tetro->tetro_type = rand() % 7;
 		tetris->next_tetro = head;
 	}
-	for (int i = 0; i < tetris->curr_len_y; i++)
-		free(tetris->curr_tetro[i]);
-	free(tetris->curr_tetro);
+	if (tetris->curr_tetro)
+	{
+		for (int i = 0; i < tetris->curr_len_y; i++)
+			free(tetris->curr_tetro[i]);
+		free(tetris->curr_tetro);
+	}
 	get_current_tetro(tetris, tetris->tetro_type);
 	tetris->act_y = 4 - tetris->curr_len_y;
 	tetris->act_x =rand() % ((9 - tetris->offset_right) + 1 -
